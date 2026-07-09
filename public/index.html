@@ -488,20 +488,124 @@ function initApp(){
     ]};
   }
 
-  let attachments;
-  try{ attachments = JSON.parse(localStorage.getItem(ATTACH_KEY)) || []; }
-  catch(e){ attachments = []; }
+  let attachments = [];
 
+  /* ── IndexedDB for attachments (large file storage) ── */
+  let idb = null;
+  const IDB_NAME = "trini-files-2026";
+  const IDB_STORE = "attachments";
+
+  function openIDB(){
+    return new Promise((resolve, reject)=>{
+      if(!window.indexedDB){ reject("no idb"); return; }
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if(!db.objectStoreNames.contains(IDB_STORE))
+          db.createObjectStore(IDB_STORE, {keyPath:"id"});
+      };
+      req.onsuccess = e => resolve(e.target.result);
+      req.onerror   = () => reject(req.error);
+    });
+  }
+
+  function idbPut(record){
+    return new Promise((resolve)=>{
+      if(!idb){ resolve(); return; }
+      try{
+        const tx = idb.transaction(IDB_STORE,"readwrite");
+        tx.objectStore(IDB_STORE).put(record);
+        tx.oncomplete = resolve;
+        tx.onerror = resolve; // non-fatal
+      }catch(e){ resolve(); }
+    });
+  }
+
+  function idbDelete(id){
+    return new Promise((resolve)=>{
+      if(!idb){ resolve(); return; }
+      try{
+        const tx = idb.transaction(IDB_STORE,"readwrite");
+        tx.objectStore(IDB_STORE).delete(id);
+        tx.oncomplete = resolve;
+        tx.onerror = resolve;
+      }catch(e){ resolve(); }
+    });
+  }
+
+  function idbGetAll(){
+    return new Promise((resolve)=>{
+      if(!idb){ resolve([]); return; }
+      try{
+        const tx = idb.transaction(IDB_STORE,"readonly");
+        const req = tx.objectStore(IDB_STORE).getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror   = () => resolve([]);
+      }catch(e){ resolve([]); }
+    });
+  }
+
+  /* ── Flash helper ── */
   let flashTimer;
+  function showFlash(msg, isError){
+    const f = document.getElementById("flash");
+    f.textContent = msg;
+    f.style.background = isError ? "var(--coral-dark)" : "var(--ink)";
+    f.classList.add("show");
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(()=>f.classList.remove("show"), isError ? 3500 : 1100);
+  }
+
+  /* ── Save state to localStorage ── */
   function save(){
-    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
-    const f=document.getElementById("flash");
-    f.classList.add("show"); clearTimeout(flashTimer);
-    flashTimer=setTimeout(()=>f.classList.remove("show"),1100);
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      showFlash("Saved ✓", false);
+    } catch(e){
+      // localStorage full or unavailable
+      showFlash("⚠️ Could not save — storage full or blocked. Try clearing browser data.", true);
+      console.warn("save() failed:", e);
+    }
   }
+
+  /* ── Save attachments to IndexedDB (falls back to localStorage) ── */
   function saveAttachments(){
-    try{ localStorage.setItem(ATTACH_KEY, JSON.stringify(attachments)); }catch(e){}
+    if(idb){
+      // IndexedDB path — no size limit worries
+      return; // records are saved individually via idbPut()
+    }
+    // localStorage fallback — strip file data to save space if needed
+    try{
+      const slim = attachments.map(a=>({...a, data: a.data.length > 200000 ? "" : a.data}));
+      localStorage.setItem(ATTACH_KEY, JSON.stringify(slim));
+    }catch(e){
+      console.warn("saveAttachments() fallback failed:", e);
+    }
   }
+
+  /* ── Boot: open IDB then load attachments ── */
+  openIDB().then(db=>{
+    idb = db;
+    return idbGetAll();
+  }).then(records=>{
+    attachments = records || [];
+    // If IDB is empty, try to migrate from old localStorage
+    if(attachments.length === 0){
+      try{
+        const old = JSON.parse(localStorage.getItem(ATTACH_KEY)) || [];
+        if(old.length > 0){
+          attachments = old;
+          // migrate into IDB
+          attachments.forEach(a => idbPut(a));
+          localStorage.removeItem(ATTACH_KEY);
+        }
+      }catch(e){}
+    }
+  }).catch(()=>{
+    // IDB unavailable — fall back to localStorage
+    try{ attachments = JSON.parse(localStorage.getItem(ATTACH_KEY)) || []; }
+    catch(e){ attachments = []; }
+  });
 
   /* ---------- Helpers ---------- */
   const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
@@ -1012,10 +1116,10 @@ function initApp(){
 
       function handleFiles(files){
         Array.from(files).forEach(file=>{
-          if(file.size > 5*1024*1024){ alert(file.name+" is too large (max 5 MB)."); return; }
+          if(file.size > 10*1024*1024){ alert(file.name+" is too large (max 10 MB)."); return; }
           const reader = new FileReader();
           reader.onload = ev =>{
-            attachments.push({
+            const record = {
               id: uid(),
               name: file.name,
               type: file.type,
@@ -1023,12 +1127,21 @@ function initApp(){
               data: ev.target.result,
               cat: "Other",
               date: new Date().toLocaleDateString()
+            };
+            attachments.push(record);
+            // Save to IndexedDB (preferred) or localStorage fallback
+            idbPut(record).then(()=>{
+              // also sync lightweight metadata to localStorage as backup index
+              saveAttachments();
             });
-            saveAttachments();
+            showFlash("File added ✓", false);
             drawAttachments();
           };
+          reader.onerror = ()=> showFlash("⚠️ Could not read that file.", true);
           reader.readAsDataURL(file);
         });
+        // reset input so same file can be re-uploaded
+        fileInput.value = "";
       }
 
       p.appendChild(dropArea);
@@ -1071,7 +1184,11 @@ function initApp(){
           const sel = document.createElement("select");
           sel.style.cssText="font-size:.72rem;border:1px solid var(--line);border-radius:6px;padding:3px 5px;background:#fff;color:var(--ink);width:100%;margin-top:2px";
           ATTACH_CATS.forEach(c=>{ const o=document.createElement("option");o.value=c;o.textContent=c;if(c===a.cat)o.selected=true; sel.appendChild(o); });
-          sel.addEventListener("change",()=>{ a.cat=sel.value; saveAttachments(); drawAttachments(); });
+          sel.addEventListener("change",()=>{
+            a.cat = sel.value;
+            idbPut(a).then(()=> saveAttachments());
+            drawAttachments();
+          });
           card.appendChild(sel);
 
           // download button
@@ -1086,7 +1203,9 @@ function initApp(){
           const del = el("button","a-del","×"); del.title="Remove";
           del.addEventListener("click",()=>{
             if(confirm("Remove "+a.name+"?")){
-              attachments=attachments.filter(x=>x.id!==a.id); saveAttachments(); drawAttachments();
+              attachments = attachments.filter(x=>x.id!==a.id);
+              idbDelete(a.id).then(()=> saveAttachments());
+              drawAttachments();
             }
           });
           card.appendChild(del);
