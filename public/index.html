@@ -495,74 +495,8 @@ function seed(){
    INIT APP (called after login)
 ──────────────────────────────────────────── */
 function initApp(){
-  let state;
-  try{ state = JSON.parse(localStorage.getItem(STORE_KEY)) || seed(); }
-  catch(e){ state = seed(); }
-  if(!state.text) state.text = {};
-  // migrate old packing format (Ryan/Wendy arrays) → new lists format
-  if(state.packing && !state.packing.lists){
-    state.packing = { lists: [
-      { id:"p-ryan",  label:"Ryan",  emoji:"👨", items: state.packing.Ryan  || [] },
-      { id:"p-wendy", label:"Wendy", emoji:"👩", items: state.packing.Wendy || [] }
-    ]};
-  }
-
+  let state = null;
   let attachments = [];
-
-  /* ── IndexedDB for attachments (large file storage) ── */
-  let idb = null;
-  const IDB_NAME = "trini-files-2026";
-  const IDB_STORE = "attachments";
-
-  function openIDB(){
-    return new Promise((resolve, reject)=>{
-      if(!window.indexedDB){ reject("no idb"); return; }
-      const req = indexedDB.open(IDB_NAME, 1);
-      req.onupgradeneeded = e => {
-        const db = e.target.result;
-        if(!db.objectStoreNames.contains(IDB_STORE))
-          db.createObjectStore(IDB_STORE, {keyPath:"id"});
-      };
-      req.onsuccess = e => resolve(e.target.result);
-      req.onerror   = () => reject(req.error);
-    });
-  }
-
-  function idbPut(record){
-    return new Promise((resolve)=>{
-      if(!idb){ resolve(); return; }
-      try{
-        const tx = idb.transaction(IDB_STORE,"readwrite");
-        tx.objectStore(IDB_STORE).put(record);
-        tx.oncomplete = resolve;
-        tx.onerror = resolve; // non-fatal
-      }catch(e){ resolve(); }
-    });
-  }
-
-  function idbDelete(id){
-    return new Promise((resolve)=>{
-      if(!idb){ resolve(); return; }
-      try{
-        const tx = idb.transaction(IDB_STORE,"readwrite");
-        tx.objectStore(IDB_STORE).delete(id);
-        tx.oncomplete = resolve;
-        tx.onerror = resolve;
-      }catch(e){ resolve(); }
-    });
-  }
-
-  function idbGetAll(){
-    return new Promise((resolve)=>{
-      if(!idb){ resolve([]); return; }
-      try{
-        const tx = idb.transaction(IDB_STORE,"readonly");
-        const req = tx.objectStore(IDB_STORE).getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror   = () => resolve([]);
-      }catch(e){ resolve([]); }
-    });
-  }
 
   /* ── Flash helper ── */
   let flashTimer;
@@ -575,55 +509,90 @@ function initApp(){
     flashTimer = setTimeout(()=>f.classList.remove("show"), isError ? 3500 : 1100);
   }
 
-  /* ── Save state to localStorage ── */
+  /* ── Save state to Postgres via API ── */
+  let saveTimer;
   function save(){
-    try{
-      localStorage.setItem(STORE_KEY, JSON.stringify(state));
-      showFlash("Saved ✓", false);
-    } catch(e){
-      // localStorage full or unavailable
-      showFlash("⚠️ Could not save — storage full or blocked. Try clearing browser data.", true);
-      console.warn("save() failed:", e);
-    }
+    // optimistic local cache so UI feels instant
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(()=>{
+      fetch("/api/state", {
+        method:"PUT",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(state)
+      }).then(r=>{
+        if(r.ok) showFlash("Saved ✓", false);
+        else     showFlash("⚠️ Server save failed", true);
+      }).catch(()=> showFlash("⚠️ Offline — saved locally only", true));
+    }, 400); // debounce 400ms so rapid typing doesn't hammer the DB
   }
 
-  /* ── Save attachments to IndexedDB (falls back to localStorage) ── */
-  function saveAttachments(){
-    if(idb){
-      // IndexedDB path — no size limit worries
-      return; // records are saved individually via idbPut()
-    }
-    // localStorage fallback — strip file data to save space if needed
-    try{
-      const slim = attachments.map(a=>({...a, data: a.data.length > 200000 ? "" : a.data}));
-      localStorage.setItem(ATTACH_KEY, JSON.stringify(slim));
-    }catch(e){
-      console.warn("saveAttachments() fallback failed:", e);
-    }
+  /* ── Attachment API helpers ── */
+  function apiPostAttachment(record){
+    return fetch("/api/attachments",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(record)
+    }).catch(e=>console.warn("attach upload failed",e));
+  }
+  function apiPutAttachment(id, cat){
+    return fetch("/api/attachments/"+id,{
+      method:"PUT",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({cat})
+    }).catch(e=>console.warn("attach update failed",e));
+  }
+  function apiDeleteAttachment(id){
+    return fetch("/api/attachments/"+id,{method:"DELETE"})
+      .catch(e=>console.warn("attach delete failed",e));
+  }
+  function apiGetAttachment(id){
+    return fetch("/api/attachments/"+id).then(r=>r.json())
+      .catch(()=>null);
   }
 
-  /* ── Boot: open IDB then load attachments, then init UI ── */
-  openIDB().then(db=>{
-    idb = db;
-    return idbGetAll();
-  }).then(records=>{
-    attachments = records || [];
-    // If IDB is empty, try to migrate from old localStorage
-    if(attachments.length === 0){
-      try{
-        const old = JSON.parse(localStorage.getItem(ATTACH_KEY)) || [];
-        if(old.length > 0){
-          attachments = old;
-          attachments.forEach(a => idbPut(a));
-          localStorage.removeItem(ATTACH_KEY);
-        }
-      }catch(e){}
+  /* ── Boot: load state + attachment list from server, then init UI ── */
+  function prepareState(raw){
+    if(!raw) raw = {};
+    // merge with seed so any missing keys are filled in
+    const s = seed();
+    if(raw.flights)   s.flights   = raw.flights;
+    if(raw.itinerary) s.itinerary = raw.itinerary;
+    if(raw.stays)     s.stays     = raw.stays;
+    if(raw.packing)   s.packing   = raw.packing;
+    if(raw.daisy)     s.daisy     = raw.daisy;
+    if(raw.contacts)  s.contacts  = raw.contacts;
+    if(raw.todo)      s.todo      = raw.todo;
+    if(raw.text)      s.text      = raw.text;
+    if(!s.text) s.text = {};
+    // migrate old packing format
+    if(s.packing && !s.packing.lists){
+      s.packing = { lists:[
+        {id:"p-ryan",  label:"Ryan",  emoji:"👨", items: s.packing.Ryan  || []},
+        {id:"p-wendy", label:"Wendy", emoji:"👩", items: s.packing.Wendy || []}
+      ]};
     }
+    return s;
+  }
+
+  Promise.all([
+    fetch("/api/state").then(r=>r.json()).catch(()=>null),
+    fetch("/api/attachments").then(r=>r.json()).catch(()=>[])
+  ]).then(([rawState, attList])=>{
+    // if server returned nothing, try localStorage cache
+    if(!rawState){
+      try{ rawState = JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){}
+    }
+    state = prepareState(rawState);
+    // attachments list (no data yet — loaded on demand when Files tab opens)
+    attachments = attList || [];
     bootUI();
   }).catch(()=>{
-    // IDB unavailable — fall back to localStorage
-    try{ attachments = JSON.parse(localStorage.getItem(ATTACH_KEY)) || []; }
-    catch(e){ attachments = []; }
+    // full offline fallback
+    let rawState = null;
+    try{ rawState = JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){}
+    state = prepareState(rawState);
+    attachments = [];
     bootUI();
   });
 
@@ -1146,21 +1115,22 @@ function initApp(){
               size: file.size,
               data: ev.target.result,
               cat: "Other",
-              date: new Date().toLocaleDateString()
+              date: new Date().toISOString().slice(0,10)
             };
-            attachments.push(record);
-            // Save to IndexedDB (preferred) or localStorage fallback
-            idbPut(record).then(()=>{
-              // also sync lightweight metadata to localStorage as backup index
-              saveAttachments();
+            // Upload to server (Postgres)
+            apiPostAttachment(record).then(r=>{
+              if(r && r.ok){
+                attachments.push({id:record.id,name:record.name,type:record.type,size:record.size,cat:record.cat,added:record.date});
+                showFlash("File uploaded ✓", false);
+                drawAttachments();
+              } else {
+                showFlash("⚠️ Upload failed", true);
+              }
             });
-            showFlash("File added ✓", false);
-            drawAttachments();
           };
           reader.onerror = ()=> showFlash("⚠️ Could not read that file.", true);
           reader.readAsDataURL(file);
         });
-        // reset input so same file can be re-uploaded
         fileInput.value = "";
       }
 
@@ -1206,16 +1176,21 @@ function initApp(){
           ATTACH_CATS.forEach(c=>{ const o=document.createElement("option");o.value=c;o.textContent=c;if(c===a.cat)o.selected=true; sel.appendChild(o); });
           sel.addEventListener("change",()=>{
             a.cat = sel.value;
-            idbPut(a).then(()=> saveAttachments());
+            apiPutAttachment(a.id, a.cat);
             drawAttachments();
           });
           card.appendChild(sel);
 
-          // download button
+          // download button — fetch full data from server then trigger download
           const dl = el("button","a-dl","⬇ Download");
           dl.addEventListener("click",()=>{
-            const anchor=document.createElement("a");
-            anchor.href=a.data; anchor.download=a.name; anchor.click();
+            dl.textContent="⏳";
+            apiGetAttachment(a.id).then(full=>{
+              dl.textContent="⬇ Download";
+              if(!full || !full.data){ showFlash("⚠️ Could not load file", true); return; }
+              const anchor=document.createElement("a");
+              anchor.href=full.data; anchor.download=full.name; anchor.click();
+            });
           });
           card.appendChild(dl);
 
@@ -1224,7 +1199,7 @@ function initApp(){
           del.addEventListener("click",()=>{
             if(confirm("Remove "+a.name+"?")){
               attachments = attachments.filter(x=>x.id!==a.id);
-              idbDelete(a.id).then(()=> saveAttachments());
+              apiDeleteAttachment(a.id);
               drawAttachments();
             }
           });
