@@ -83,18 +83,27 @@
     box-shadow:var(--shadow);
     overflow:hidden;
   }
-  header.app .tt-flag{position:absolute;top:14px;right:18px;width:54px;height:54px;border-radius:50%;
-    overflow:hidden;box-shadow:0 0 20px rgba(0,0,0,.3);opacity:.95;flex-shrink:0}
+  header.app .tt-flag{
+    position:absolute;top:12px;right:14px;
+    width:42px;height:42px;border-radius:50%;
+    overflow:hidden;box-shadow:0 0 14px rgba(0,0,0,.3);opacity:.95;flex-shrink:0;
+  }
   header.app .tt-flag img{width:100%;height:100%;object-fit:cover}
   header.app .logout-btn{
-    position:absolute;top:14px;left:16px;
+    position:absolute;top:12px;right:66px;
     background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
-    color:#fff;border-radius:999px;padding:5px 12px;font-size:.72rem;font-weight:700;
-    cursor:pointer;backdrop-filter:blur(4px);transition:.15s;letter-spacing:.3px;
+    color:#fff;border-radius:999px;padding:5px 11px;font-size:.7rem;font-weight:700;
+    cursor:pointer;backdrop-filter:blur(4px);transition:.15s;letter-spacing:.3px;white-space:nowrap;
   }
   header.app .logout-btn:hover{background:rgba(255,255,255,.25)}
-  header.app h1{margin:0;font-size:1.5rem;letter-spacing:.3px;line-height:1.15;padding-left:52px}
-  header.app .sub{margin-top:4px;font-size:.86rem;opacity:.92;padding-left:52px}
+  header.app h1{margin:0;font-size:1.4rem;letter-spacing:.3px;line-height:1.2;padding-right:120px}
+  header.app .sub{margin-top:4px;font-size:.82rem;opacity:.92;padding-right:120px}
+  @media(max-width:400px){
+    header.app h1{font-size:1.15rem;padding-right:110px}
+    header.app .sub{font-size:.76rem;padding-right:110px}
+    header.app .tt-flag{width:36px;height:36px;top:14px;right:12px}
+    header.app .logout-btn{right:56px;font-size:.65rem;padding:4px 9px}
+  }
   .countdown{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
   .cd-box{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);
     backdrop-filter:blur(4px);border-radius:12px;padding:8px 12px;text-align:center;min-width:60px}
@@ -1205,12 +1214,13 @@ function initApp(){
           });
           card.appendChild(del);
           grid.appendChild(card);
-        });
+        }); // end catFiles.forEach
         p.appendChild(grid);
-      });
-    }
+      }); // end ATTACH_CATS.forEach
+    } // end drawAttachments
+
     drawAttachments();
-  }
+  } // end renderAttachments
 
   /* ── bootUI: called once IDB is ready ── */
   const renderers={overview:renderOverview,itinerary:renderItinerary,flights:renderFlights,
