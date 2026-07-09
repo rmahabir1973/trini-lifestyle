@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Trinidad & Tobago 2026</title>
+
+<!-- PWA -->
+<meta name="theme-color" content="#0d9488" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Trini '26" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+
+<style>
+  :root{
+    --teal-900:#0f3d3e;
+    --teal-700:#0d7377;
+    --teal-600:#0d9488;
+    --teal-500:#14b8a6;
+    --teal-100:#d3f3ee;
+    --sand:#fbf3e4;
+    --sand-2:#f5e7cf;
+    --coral:#ff6f5e;
+    --coral-dark:#e85a4a;
+    --sun:#ffb84d;
+    --ink:#123536;
+    --muted:#5c7a78;
+    --line:#e3ddcf;
+    --white:#ffffff;
+    --ok:#1f9d63;
+    --shadow:0 6px 22px rgba(15,61,62,.10);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg,#e9f7f4 0%, var(--sand) 40%);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--teal-700)}
+
+  /* Header */
+  header.app{
+    position:relative;
+    background:radial-gradient(120% 120% at 80% -10%, var(--teal-500) 0%, var(--teal-700) 55%, var(--teal-900) 100%);
+    color:#fff;
+    padding:calc(env(safe-area-inset-top) + 20px) 18px 22px;
+    border-bottom-left-radius:22px;
+    border-bottom-right-radius:22px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  header.app .sun{position:absolute;top:14px;right:18px;width:54px;height:54px;border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, #ffd88a, var(--sun));box-shadow:0 0 34px rgba(255,184,77,.7);opacity:.9}
+  header.app h1{margin:0;font-size:1.5rem;letter-spacing:.3px;line-height:1.15}
+  header.app .sub{margin-top:4px;font-size:.86rem;opacity:.92}
+  .countdown{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .cd-box{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);
+    backdrop-filter:blur(4px);border-radius:12px;padding:8px 12px;text-align:center;min-width:60px}
+  .cd-box b{display:block;font-size:1.35rem;line-height:1}
+  .cd-box span{font-size:.62rem;text-transform:uppercase;letter-spacing:1px;opacity:.85}
+  .cd-note{margin-top:10px;font-size:.8rem;opacity:.92}
+
+  /* Tabs */
+  nav.tabs{
+    position:sticky;top:0;z-index:20;
+    display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+    padding:10px 12px;margin-top:-2px;
+    background:linear-gradient(180deg, rgba(251,243,228,.96), rgba(251,243,228,.86));
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs::-webkit-scrollbar{display:none}
+  nav.tabs button{
+    flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);
+    padding:8px 13px;border-radius:999px;font-size:.82rem;font-weight:600;cursor:pointer;
+    display:flex;align-items:center;gap:6px;transition:.15s;
+  }
+  nav.tabs button .ic{font-size:.95rem}
+  nav.tabs button.active{background:var(--teal-600);color:#fff;border-color:var(--teal-600);box-shadow:var(--shadow)}
+
+  main{max-width:760px;margin:0 auto;padding:16px 14px 90px}
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2.section{font-size:1.15rem;margin:6px 2px 12px;display:flex;align-items:center;gap:8px}
+  .hint{font-size:.8rem;color:var(--muted);margin:0 2px 14px}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 4px;font-size:1rem}
+  .card .meta{font-size:.82rem;color:var(--muted)}
+  .pill{display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 9px;border-radius:999px;background:var(--teal-100);color:var(--teal-700);vertical-align:middle}
+  .pill.coral{background:#ffe3de;color:var(--coral-dark)}
+  .pill.sun{background:#fff0d6;color:#a86a12}
+  .pill.grey{background:#eef1ef;color:#5c7a78}
+
+  /* Flight card */
+  .flight{display:flex;align-items:center;gap:12px}
+  .flight .route{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .flight .code{font-weight:800;font-size:1.15rem;letter-spacing:1px}
+  .flight .arrow{color:var(--coral);font-weight:800}
+  .flight .times{font-size:.82rem;color:var(--muted);margin-top:2px}
+  .flight-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+
+  /* itinerary */
+  .day{position:relative}
+  .day .datechip{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    background:var(--teal-600);color:#fff;border-radius:12px;width:52px;height:52px;flex:0 0 auto}
+  .day .datechip b{font-size:1.15rem;line-height:1}
+  .day .datechip span{font-size:.58rem;text-transform:uppercase;letter-spacing:1px}
+  .day-row{display:flex;gap:12px;align-items:flex-start}
+  .day-row .body{flex:1;min-width:0}
+  .day .title{font-weight:700;font-size:.98rem}
+  .day ul{margin:8px 0 0;padding-left:18px}
+  .day ul li{font-size:.86rem;margin:3px 0;color:#274d4d}
+
+  /* checklist */
+  ul.check{list-style:none;margin:0;padding:0}
+  ul.check li{display:flex;align-items:center;gap:11px;padding:9px 4px;border-bottom:1px solid #f0ece0}
+  ul.check li:last-child{border-bottom:none}
+  ul.check input[type=checkbox]{appearance:none;-webkit-appearance:none;width:22px;height:22px;flex:0 0 auto;
+    border:2px solid var(--teal-500);border-radius:7px;cursor:pointer;position:relative;transition:.12s;background:#fff}
+  ul.check input[type=checkbox]:checked{background:var(--teal-600);border-color:var(--teal-600)}
+  ul.check input[type=checkbox]:checked::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;
+    border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+  ul.check label{flex:1;font-size:.92rem;cursor:pointer}
+  ul.check li.done label{text-decoration:line-through;color:#9db3b1}
+  .del{background:none;border:none;color:#c7bfae;font-size:1.15rem;cursor:pointer;padding:2px 6px;line-height:1}
+  .del:hover{color:var(--coral)}
+  .progress{height:8px;background:#eef1ef;border-radius:999px;overflow:hidden;margin:2px 2px 12px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--teal-500),var(--teal-600));width:0;transition:width .3s}
+  .count-badge{font-size:.78rem;color:var(--muted);font-weight:600}
+
+  .addrow{display:flex;gap:8px;margin-top:12px}
+  .addrow input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:.9rem;background:#fff}
+  .addrow input:focus{outline:2px solid var(--teal-100);border-color:var(--teal-500)}
+  .btn{background:var(--teal-600);color:#fff;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:.88rem;cursor:pointer}
+  .btn:active{transform:translateY(1px)}
+  .btn.coral{background:var(--coral)}
+  .btn.ghost{background:#fff;color:var(--teal-700);border:1px solid var(--line)}
+
+  textarea.note{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-family:inherit;
+    font-size:.92rem;min-height:90px;resize:vertical;background:#fffdf8}
+  textarea.note:focus{outline:2px solid var(--teal-100);border-color:var(--teal-500)}
+  .note-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin:8px 2px 6px}
+
+  /* contacts */
+  .contact input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.9rem;margin-top:6px;background:#fff}
+  .contact .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .contact-head{display:flex;justify-content:space-between;align-items:center}
+  @media(max-width:520px){.contact .grid{grid-template-columns:1fr}}
+
+  .kv{font-size:.86rem;margin:6px 0;line-height:1.5}
+  .kv b{color:var(--teal-700)}
+  details.dir{margin-top:8px}
+  details.dir summary{cursor:pointer;font-size:.82rem;color:var(--teal-700);font-weight:600}
+  details.dir p{font-size:.82rem;color:#3a5a59;line-height:1.55;margin:8px 0 0}
+
+  .who{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .who span{font-size:.72rem;background:var(--sand-2);color:#6b5a34;padding:3px 9px;border-radius:999px}
+
+  footer.tools{max-width:760px;margin:0 auto;padding:4px 14px 30px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  footer.tools button{font-size:.78rem}
+  .save-flash{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:9px 16px;border-radius:999px;font-size:.82rem;opacity:0;
+    transition:.25s;pointer-events:none;z-index:50;box-shadow:var(--shadow)}
+  .save-flash.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .banner{background:#fff7e8;border:1px solid #f2e2bf;color:#7a5b1a;border-radius:12px;padding:10px 13px;font-size:.82rem;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="sun"></div>
+  <h1>🌴 Trinidad &amp; Tobago 2026</h1>
+  <div class="sub">Family trip · Aug 17 – Aug 31 · Ryan, Wendy, Mia &amp; Mavis</div>
+  <div class="countdown" id="countdown"></div>
+  <div class="cd-note" id="cdNote"></div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="overview" class="active"><span class="ic">🏝️</span>Overview</button>
+  <button data-tab="itinerary"><span class="ic">🗓️</span>Itinerary</button>
+  <button data-tab="flights"><span class="ic">✈️</span>Flights</button>
+  <button data-tab="stays"><span class="ic">🏠</span>Stays</button>
+  <button data-tab="packing"><span class="ic">🧳</span>Packing</button>
+  <button data-tab="daisy"><span class="ic">🐶</span>Daisy</button>
+  <button data-tab="contacts"><span class="ic">📇</span>Contacts</button>
+  <button data-tab="notes"><span class="ic">📝</span>Notes</button>
+</nav>
+
+<main>
+  <section class="panel active" id="overview"></section>
+  <section class="panel" id="itinerary"></section>
+  <section class="panel" id="flights"></section>
+  <section class="panel" id="stays"></section>
+  <section class="panel" id="packing"></section>
+  <section class="panel" id="daisy"></section>
+  <section class="panel" id="contacts"></section>
+  <section class="panel" id="notes"></section>
+</main>
+
+<footer class="tools">
+  <button class="btn ghost" id="exportBtn">⬇︎ Backup (export)</button>
+  <button class="btn ghost" id="importBtn">⬆︎ Restore (import)</button>
+  <button class="btn ghost" id="resetBtn">↺ Reset to original</button>
+  <input type="file" id="importFile" accept="application/json" hidden />
+</footer>
+
+<div class="save-flash" id="flash">Saved ✓</div>
+
+<script>
+/* ============================================================
+   Trinidad & Tobago 2026 — trip planner
+   All data lives in the browser (localStorage). No server needed.
+   ============================================================ */
+const STORE_KEY = "trini-trip-2026-v1";
+
+/* ---------- Default (seed) data ---------- */
+function seed(){
+  return {
+    flights: [
+      { id:"f1", tag:"Outbound", tagClass:"", from:"YYZ", to:"POS", code:"AC0984",
+        date:"Mon, 17 Aug 2026", times:"6:30 PM → 12:15 AM (+1)", pax:["Ryan","Wendy","Mia","Mavis"],
+        conf:"", note:"" },
+      { id:"f2", tag:"To Tobago", tagClass:"sun", from:"POS", to:"TAB", code:"BW1514",
+        date:"Wed, 26 Aug 2026", times:"11:15 AM → 11:40 AM", pax:["Ryan","Wendy","Mia","Mavis"],
+        conf:"", note:"" },
+      { id:"f3", tag:"From Tobago", tagClass:"sun", from:"TAB", to:"POS", code:"BW1513",
+        date:"Sat, 29 Aug 2026", times:"11:45 AM → 12:10 PM", pax:["Ryan","Wendy","Mia","Mavis"],
+        conf:"", note:"" },
+      { id:"f4", tag:"Home", tagClass:"coral", from:"POS", to:"YYZ", code:"",
+        date:"Mon, 31 Aug 2026", times:"1:25 AM → 7:10 AM", pax:["Ryan","Wendy","Mia","Mavis"],
+        conf:"", note:"Very early departure — leave for airport late Sun night (Aug 30)." }
+    ],
+    itinerary: [
+      { d:"17", dow:"Mon", title:"Fly out — YYZ → POS", tone:"teal",
+        items:["Drop Daisy at Clovelly Kennels 🐶","AC0984 departs 6:30 PM","Arrive POS 12:15 AM"] },
+      { d:"18", dow:"Tue", title:"Staying by Donna & Kester", tone:"teal", items:["Settle in, rest up"] },
+      { d:"19", dow:"Wed", title:"Staying by Aunty Myrna", tone:"teal", items:["Visit Wendy's family"] },
+      { d:"20", dow:"Thu", title:"Head South to Debbie", tone:"teal", items:["Travel south","Overnight at Debbie's"] },
+      { d:"21", dow:"Fri", title:"Head to Mayaro Beach", tone:"coral", items:["Mayaro excursion begins 🏖️ (Day 1)"] },
+      { d:"22", dow:"Sat", title:"In Mayaro Beach", tone:"coral", items:["Mayaro excursion (Day 2)"] },
+      { d:"23", dow:"Sun", title:"Leave Mayaro → back to Debbie", tone:"coral", items:["Mayaro excursion (Day 3) / travel back"] },
+      { d:"24", dow:"Mon", title:"Head up North", tone:"teal", items:["Organize water park or other adventures 🎢"] },
+      { d:"25", dow:"Tue", title:"Up North — adventures", tone:"teal", items:["Water park / activities"] },
+      { d:"26", dow:"Wed", title:"Head to Tobago ✈️", tone:"sun", items:["BW1514 POS→TAB 11:15 AM","AirBnB check-in 2:00 PM"] },
+      { d:"27", dow:"Thu", title:"In Tobago", tone:"sun", items:["Beach / explore"] },
+      { d:"28", dow:"Fri", title:"In Tobago", tone:"sun", items:["Beach / explore"] },
+      { d:"29", dow:"Sat", title:"Back to Trinidad", tone:"sun", items:["AirBnB checkout 11:00 AM","BW1513 TAB→POS 11:45 AM","Back by Donna & Kester or Aunty Myrna"] },
+      { d:"30", dow:"Sun", title:"Last day", tone:"teal", items:["Stay up North to catch flight","Pack up / final visits"] },
+      { d:"31", dow:"Mon", title:"Fly home — POS → YYZ", tone:"coral", items:["Depart 1:25 AM","Arrive YYZ 7:10 AM","Pick up Daisy from Clovelly Kennels 🐶"] }
+    ],
+    stays: [
+      { id:"s-tobago", name:"AirBnB — Tobago", tag:"Aug 26–29", tagClass:"sun",
+        host:"Seeragia", conf:"HMNXMPNCD3",
+        checkin:"Wed, Aug 26 · 2:00 PM", checkout:"Sat, Aug 29 · 11:00 AM",
+        address:"Samaan Grove Development, Road 60, Canaan, Tobago, Trinidad & Tobago",
+        directions:"Samaan Grove Development is off Golden Grove Road in Canaan. From the airport: head East on Milford Road 4.2 km, turn left on Golden Grove Road, head North 800 m — you'll see the Samaan Grove sign and guard booth on your left. Pass through 24-hr security; the villa is on your right. No. 60 is marked outside. From the Scarborough ferry: head West on Claude Noel Highway 9.2 km, turn right on Golden Grove Road, head North 800 m to the same entrance.",
+        note:"" },
+      { id:"s-donna", name:"Donna & Kester", tag:"Aug 18 · & Aug 29?", tagClass:"",
+        host:"Donna & Kester", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"First stop after landing. Possible stop again Aug 29 after Tobago." },
+      { id:"s-myrna", name:"Aunty Myrna", tag:"Aug 19 · & Aug 29?", tagClass:"",
+        host:"Aunty Myrna", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"Visiting Wendy's family. Possible stop again Aug 29." },
+      { id:"s-debbie", name:"Debbie (South)", tag:"Aug 20 & 23", tagClass:"",
+        host:"Debbie", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"Base in the South, around the Mayaro excursion." },
+      { id:"s-mayaro", name:"Mayaro Beach", tag:"Aug 21–23", tagClass:"coral",
+        host:"", conf:"", checkin:"", checkout:"", address:"Mayaro", directions:"", note:"3-day family beach excursion." }
+    ],
+    packing: {
+      Ryan: ["Exercise bands","Running shoes","Sandals","Workout clothes","CPAP machine","2 bathing trunks",
+        "Phone charger","5 pairs shorts","1 long jeans","2 dress pants","1 track suit","6 t-shirts",
+        "10 underwear","3 socks","Toothbrush","Toothpaste","Shaving lotion (mini)"],
+      Wendy: ["Happy juice","Collagen","Creatine","Exercise bands","Running shoes","Workout clothes",
+        "Hemp seeds (for yogurt)","Protein powder","Shaker cup","Electrolytes","GBX Burn","GBX Fit","Slynd","M"]
+    },
+    daisy: {
+      checklist:["Confirm booking with Clovelly Kennels","Drop off Daisy — Aug 17","Pack her food (14 days)",
+        "Vaccination records","Bed / blanket","Leash & collar","Favourite toy","Any medications",
+        "Leave emergency contact number","Pick up Daisy — Aug 31"]
+    },
+    contacts: [
+      { id:"c1", name:"Donna & Kester", role:"Host — first stop", phone:"", note:"" },
+      { id:"c2", name:"Aunty Myrna", role:"Wendy's family", phone:"", note:"" },
+      { id:"c3", name:"Debbie", role:"Host — South", phone:"", note:"" },
+      { id:"c4", name:"Seeragia", role:"Tobago AirBnB host", phone:"", note:"Conf: HMNXMPNCD3" },
+      { id:"c5", name:"Clovelly Kennels", role:"Daisy boarding 🐶", phone:"", note:"Aug 17–31" }
+    ],
+    todo: ["Check passports valid (6+ months)","Notify bank / get TT cash","Travel insurance",
+      "Confirm airport pickup in POS","Charge & pack CPAP","Download offline maps","Confirm Daisy boarding"],
+    text: {}
+  };
+}
+
+/* ---------- State load/save ---------- */
+let state;
+try{ state = JSON.parse(localStorage.getItem(STORE_KEY)) || seed(); }
+catch(e){ state = seed(); }
+if(!state.text) state.text = {};
+
+let flashTimer;
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  const f=document.getElementById("flash");
+  f.classList.add("show"); clearTimeout(flashTimer);
+  flashTimer=setTimeout(()=>f.classList.remove("show"),1100);
+}
+
+/* ---------- Helpers ---------- */
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const uid=()=>"x"+Math.random().toString(36).slice(2,9);
+
+/* ---------- Countdown ---------- */
+function renderCountdown(){
+  const dep=new Date("2026-08-17T18:30:00-04:00");
+  const ret=new Date("2026-08-31T07:10:00-04:00");
+  const now=new Date();
+  const box=document.getElementById("countdown");
+  const note=document.getElementById("cdNote");
+  box.innerHTML="";
+  if(now>=ret){ note.textContent="Welcome home! 🌴 Hope it was amazing."; return; }
+  if(now>=dep && now<ret){
+    note.textContent="You're in Trinidad & Tobago right now — enjoy every minute! 🏝️";
+    const daysLeft=Math.ceil((ret-now)/86400000);
+    box.appendChild(mkBox(daysLeft,"days left"));
+    return;
+  }
+  const diff=dep-now;
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff%86400000/3600000);
+  const m=Math.floor(diff%3600000/60000);
+  box.appendChild(mkBox(d,"days"));
+  box.appendChild(mkBox(h,"hours"));
+  box.appendChild(mkBox(m,"mins"));
+  note.textContent="Countdown to takeoff ✈️";
+}
+function mkBox(n,l){const b=el("div","cd-box");b.innerHTML="<b>"+n+"</b><span>"+l+"</span>";return b;}
+
+/* ---------- Editable note field ---------- */
+function noteField(key,label,ph){
+  const wrap=el("div");
+  if(label) wrap.appendChild(el("div","note-lbl",label));
+  const ta=el("textarea","note");
+  ta.placeholder=ph||"Type here…";
+  ta.value=state.text[key]||"";
+  ta.addEventListener("input",()=>{state.text[key]=ta.value;save();});
+  wrap.appendChild(ta);
+  return wrap;
+}
+
+/* ---------- Checklist renderer ---------- */
+function checklist(ns, items, {allowAdd=true, addPh="Add item…", onChange}={}){
+  const wrap=el("div");
+  const prog=el("div","progress"); const bar=el("i"); prog.appendChild(bar);
+  const badge=el("div","count-badge");
+  wrap.appendChild(badge); wrap.appendChild(prog);
+  const ul=el("ul","check");
+  function doneKey(item){return "done:"+ns+":"+item;}
+  function refresh(){
+    const total=items.length;
+    const done=items.filter(i=>state.text[doneKey(i)]).length;
+    bar.style.width=(total?Math.round(done/total*100):0)+"%";
+    badge.textContent=done+" / "+total+" done";
+  }
+  function draw(){
+    ul.innerHTML="";
+    items.forEach((item)=>{
+      const li=el("li"); const id=uid();
+      const cb=el("input"); cb.type="checkbox"; cb.id=id;
+      const on=!!state.text[doneKey(item)];
+      cb.checked=on; if(on) li.classList.add("done");
+      cb.addEventListener("change",()=>{
+        state.text[doneKey(item)]=cb.checked;
+        li.classList.toggle("done",cb.checked); refresh(); save();
+      });
+      const lb=el("label"); lb.htmlFor=id; lb.textContent=item;
+      const del=el("button","del","×"); del.title="Remove";
+      del.addEventListener("click",()=>{
+        const ix=items.indexOf(item); if(ix>-1)items.splice(ix,1);
+        delete state.text[doneKey(item)];
+        if(onChange)onChange(); draw(); refresh(); save();
+      });
+      li.appendChild(cb); li.appendChild(lb); li.appendChild(del);
+      ul.appendChild(li);
+    });
+  }
+  wrap.appendChild(ul);
+  if(allowAdd){
+    const row=el("div","addrow");
+    const inp=el("input"); inp.type="text"; inp.placeholder=addPh;
+    const b=el("button","btn","Add");
+    const add=()=>{const v=inp.value.trim(); if(!v)return; items.push(v); inp.value="";
+      if(onChange)onChange(); draw(); refresh(); save();};
+    b.addEventListener("click",add);
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter")add();});
+    row.appendChild(inp); row.appendChild(b); wrap.appendChild(row);
+  }
+  draw(); refresh();
+  return wrap;
+}
+
+/* ================= RENDERERS ================= */
+function renderOverview(){
+  const p=document.getElementById("overview"); p.innerHTML="";
+  p.appendChild(el("h2","section","🏝️ Trip at a glance"));
+
+  const c1=el("div","card");
+  c1.innerHTML=`
+    <div class="kv"><b>Dates:</b> Mon 17 Aug → Mon 31 Aug 2026 (15 days)</div>
+    <div class="kv"><b>Travellers:</b> Ryan, Wendy, Mia &amp; Mavis</div>
+    <div class="kv"><b>Base:</b> Trinidad — with a Tobago getaway (Aug 26–29)</div>
+    <div class="kv"><b>Highlight:</b> Mayaro beach excursion (Aug 21–23) 🏖️</div>
+    <div class="kv"><b>Daisy 🐶:</b> Boarding at Clovelly Kennels, Aug 17–31</div>`;
+  p.appendChild(c1);
+
+  const key=el("div","card");
+  key.innerHTML=`<h3>Key dates</h3>`;
+  const rows=[
+    ["✈️","Aug 17","Fly out YYZ → POS (AC0984, 6:30 PM)"],
+    ["🏖️","Aug 21–23","Mayaro beach excursion"],
+    ["🛫","Aug 26","Fly to Tobago (BW1514) · AirBnB check-in"],
+    ["🏠","Aug 29","AirBnB checkout · fly back (BW1513)"],
+    ["✈️","Aug 31","Fly home POS → YYZ (1:25 AM)"]
+  ];
+  rows.forEach(r=>{
+    const d=el("div","kv"); d.innerHTML=`${r[0]} <b>${r[1]}</b> — ${esc(r[2])}`; key.appendChild(d);
+  });
+  p.appendChild(key);
+
+  const tips=el("div","card");
+  tips.innerHTML=`<h3>How to use this app</h3>
+    <div class="meta" style="line-height:1.6;margin-top:6px">
+      Everything you check or type is saved right on this device — no login, works offline.
+      Tap the tabs above to move around. Use <b>Packing</b> and <b>Daisy</b> to tick things off,
+      and the <b>Backup</b> button at the bottom to save a copy or move it to another phone.
+    </div>`;
+  p.appendChild(tips);
+}
+
+function renderItinerary(){
+  const p=document.getElementById("itinerary"); p.innerHTML="";
+  p.appendChild(el("h2","section","🗓️ Day-by-day"));
+  p.appendChild(el("p","hint","Plans are tentative — tap a day's note box to jot changes."));
+  state.itinerary.forEach((day)=>{
+    const card=el("div","card day");
+    const row=el("div","day-row");
+    const chip=el("div","datechip"); chip.style.background=
+      day.tone==="coral"?"var(--coral)":(day.tone==="sun"?"var(--sun)":"var(--teal-600)");
+    if(day.tone==="sun") chip.style.color="#5a3d05";
+    chip.innerHTML=`<b>${day.d}</b><span>${day.dow}</span>`;
+    const body=el("div","body");
+    body.innerHTML=`<div class="title">${esc(day.title)}</div>`;
+    const ul=el("ul");
+    day.items.forEach(i=>{const li=el("li");li.textContent=i;ul.appendChild(li);});
+    body.appendChild(ul);
+    row.appendChild(chip); row.appendChild(body);
+    card.appendChild(row);
+    card.appendChild(noteField("day:"+day.d,"","Notes / changes for Aug "+day.d+"…"));
+    p.appendChild(card);
+  });
+}
+
+function renderFlights(){
+  const p=document.getElementById("flights"); p.innerHTML="";
+  p.appendChild(el("h2","section","✈️ Flights"));
+  p.appendChild(el("p","hint","Add confirmation/seat details to each flight below."));
+  state.flights.forEach(f=>{
+    const card=el("div","card");
+    const head=el("div","flight-head");
+    head.innerHTML=`<span class="pill ${f.tagClass}">${esc(f.tag)}</span>
+      <span class="meta">${esc(f.date)}</span>`;
+    card.appendChild(head);
+    const fl=el("div","flight"); fl.style.marginTop="8px";
+    fl.innerHTML=`<div class="route">
+        <div class="code">${esc(f.from)}</div>
+        <div class="arrow">→</div>
+        <div class="code">${esc(f.to)}</div>
+      </div>
+      <div style="text-align:right">
+        ${f.code?`<div style="font-weight:800;color:var(--teal-700)">${esc(f.code)}</div>`:``}
+        <div class="times">${esc(f.times)}</div>
+      </div>`;
+    card.appendChild(fl);
+    const who=el("div","who"); f.pax.forEach(x=>{const s=el("span");s.textContent=x;who.appendChild(s);});
+    card.appendChild(who);
+    if(f.note){const n=el("div","banner");n.textContent="⏰ "+f.note;n.style.marginTop="10px";n.style.marginBottom="0";card.appendChild(n);}
+
+    const conf=el("div"); conf.style.marginTop="10px";
+    conf.appendChild(el("div","note-lbl","Confirmation / booking ref"));
+    const ci=el("input"); ci.type="text"; ci.placeholder="e.g. ABC123";
+    ci.style.cssText="width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.9rem;background:#fff";
+    ci.value=state.text["flightconf:"+f.id]||"";
+    ci.addEventListener("input",()=>{state.text["flightconf:"+f.id]=ci.value;save();});
+    conf.appendChild(ci);
+    card.appendChild(conf);
+    card.appendChild(noteField("flightnote:"+f.id,"Seats / baggage / notes","e.g. seats 12A–12D, checked bags…"));
+    p.appendChild(card);
+  });
+}
+
+function renderStays(){
+  const p=document.getElementById("stays"); p.innerHTML="";
+  p.appendChild(el("h2","section","🏠 Where we're staying"));
+  state.stays.forEach(s=>{
+    const card=el("div","card");
+    let h=`<div class="flight-head"><h3 style="margin:0">${esc(s.name)}</h3><span class="pill ${s.tagClass}">${esc(s.tag)}</span></div>`;
+    if(s.host) h+=`<div class="kv"><b>Host:</b> ${esc(s.host)}</div>`;
+    if(s.conf) h+=`<div class="kv"><b>Confirmation:</b> ${esc(s.conf)}</div>`;
+    if(s.checkin) h+=`<div class="kv"><b>Check-in:</b> ${esc(s.checkin)}</div>`;
+    if(s.checkout) h+=`<div class="kv"><b>Checkout:</b> ${esc(s.checkout)}</div>`;
+    if(s.address) h+=`<div class="kv"><b>Address:</b> ${esc(s.address)}</div>`;
+    card.innerHTML=h;
+    if(s.directions){
+      const d=el("details","dir");
+      d.innerHTML=`<summary>Directions from host</summary><p>${esc(s.directions)}</p>`;
+      card.appendChild(d);
+    }
+    if(s.note){const n=el("div","meta");n.style.marginTop="8px";n.textContent=s.note;card.appendChild(n);}
+    card.appendChild(noteField("stay:"+s.id,"Notes","Notes for this stay…"));
+    p.appendChild(card);
+  });
+}
+
+function renderPacking(){
+  const p=document.getElementById("packing"); p.innerHTML="";
+  p.appendChild(el("h2","section","🧳 Packing lists"));
+  p.appendChild(el("p","hint","Tap a box to mark packed. Add or remove items freely."));
+  ["Ryan","Wendy"].forEach(person=>{
+    const card=el("div","card");
+    card.appendChild(el("h3",null,(person==="Ryan"?"👨 ":"👩 ")+person+"'s bag"));
+    card.appendChild(checklist("pack-"+person, state.packing[person], {addPh:"Add to "+person+"'s list…"}));
+    p.appendChild(card);
+  });
+}
+
+function renderDaisy(){
+  const p=document.getElementById("daisy"); p.innerHTML="";
+  p.appendChild(el("h2","section","🐶 Daisy — Clovelly Kennels"));
+  const info=el("div","card");
+  info.innerHTML=`
+    <div class="flight-head"><h3 style="margin:0">Boarding stay</h3><span class="pill coral">Aug 17 – 31</span></div>
+    <div class="kv"><b>Where:</b> Clovelly Kennels</div>
+    <div class="kv"><b>Drop-off:</b> Mon, Aug 17 (before we leave for the airport)</div>
+    <div class="kv"><b>Pick-up:</b> Mon, Aug 31 (after we land, 7:10 AM)</div>`;
+  p.appendChild(info);
+
+  const card=el("div","card");
+  card.appendChild(el("h3",null,"Daisy's checklist"));
+  card.appendChild(checklist("daisy", state.daisy.checklist, {addPh:"Add for Daisy…"}));
+  p.appendChild(card);
+
+  const notes=el("div","card");
+  notes.appendChild(el("h3",null,"Kennel notes"));
+  notes.appendChild(noteField("daisy-notes","","Feeding schedule, vet info, quirks, pick-up instructions…"));
+  p.appendChild(notes);
+}
+
+function renderContacts(){
+  const p=document.getElementById("contacts"); p.innerHTML="";
+  p.appendChild(el("h2","section","📇 Contacts"));
+  p.appendChild(el("p","hint","Tap a field to add phone numbers and notes."));
+  const list=el("div"); p.appendChild(list);
+  function draw(){
+    list.innerHTML="";
+    state.contacts.forEach(c=>{
+      const card=el("div","card contact");
+      const head=el("div","contact-head");
+      head.innerHTML=`<h3 style="margin:0">${esc(c.name||"New contact")}</h3>`;
+      const del=el("button","del","×");
+      del.addEventListener("click",()=>{state.contacts=state.contacts.filter(x=>x.id!==c.id);draw();save();});
+      head.appendChild(del);
+      card.appendChild(head);
+      const role=el("div","meta"); role.textContent=c.role||""; card.appendChild(role);
+      const grid=el("div","grid");
+      const pn=el("input");pn.type="tel";pn.placeholder="Phone";pn.value=c.phone||"";
+      pn.addEventListener("input",()=>{c.phone=pn.value;save();});
+      const nt=el("input");nt.type="text";nt.placeholder="Note";nt.value=c.note||"";
+      nt.addEventListener("input",()=>{c.note=nt.value;save();});
+      grid.appendChild(pn);grid.appendChild(nt);
+      card.appendChild(grid);
+      list.appendChild(card);
+    });
+  }
+  draw();
+  const row=el("div","addrow");
+  const inp=el("input");inp.type="text";inp.placeholder="New contact name…";
+  const b=el("button","btn","Add");
+  const add=()=>{const v=inp.value.trim();if(!v)return;state.contacts.push({id:uid(),name:v,role:"",phone:"",note:""});inp.value="";draw();save();};
+  b.addEventListener("click",add);
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")add();});
+  row.appendChild(inp);row.appendChild(b);p.appendChild(row);
+}
+
+function renderNotes(){
+  const p=document.getElementById("notes"); p.innerHTML="";
+  p.appendChild(el("h2","section","📝 Notes & to-do"));
+  const td=el("div","card");
+  td.appendChild(el("h3",null,"Pre-trip to-do"));
+  td.appendChild(checklist("todo", state.todo, {addPh:"Add a to-do…"}));
+  p.appendChild(td);
+  const n=el("div","card");
+  n.appendChild(el("h3",null,"Shared notes"));
+  n.appendChild(noteField("shared-notes","","Anything and everything — gift ideas, food to buy, people to see…"));
+  p.appendChild(n);
+}
+
+/* ---------- Tabs ---------- */
+const renderers={overview:renderOverview,itinerary:renderItinerary,flights:renderFlights,
+  stays:renderStays,packing:renderPacking,daisy:renderDaisy,contacts:renderContacts,notes:renderNotes};
+document.getElementById("tabs").addEventListener("click",e=>{
+  const btn=e.target.closest("button"); if(!btn)return;
+  const tab=btn.dataset.tab;
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b===btn));
+  document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id===tab));
+  renderers[tab]();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+/* ---------- Backup / restore / reset ---------- */
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="trinidad-trip-2026-backup.json";
+  a.click();
+});
+document.getElementById("importBtn").addEventListener("click",()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change",e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{try{state=JSON.parse(r.result);if(!state.text)state.text={};save();renderAll();alert("Restored from backup ✓");}
+    catch(err){alert("Sorry, that file couldn't be read.");}};
+  r.readAsText(file);
+});
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  if(confirm("Reset everything back to the original plan? Your checks and notes will be cleared.")){
+    state=seed();save();renderAll();
+  }
+});
+
+function renderAll(){
+  const active=document.querySelector("nav.tabs button.active")?.dataset.tab||"overview";
+  renderers[active]();
+  renderCountdown();
+}
+
+/* ---------- Init ---------- */
+renderOverview();
+renderCountdown();
+setInterval(renderCountdown,60000);
+
+/* ---------- Service worker (PWA) ---------- */
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
