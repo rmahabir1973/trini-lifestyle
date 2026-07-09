@@ -409,10 +409,16 @@ document.getElementById("li-btn").addEventListener("click", doLogin);
 document.getElementById("li-pass").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
 document.getElementById("li-user").addEventListener("keydown", e => { if(e.key==="Enter") document.getElementById("li-pass").focus(); });
 
+// Always start with app hidden; only show after confirmed auth
+document.getElementById("app").style.display = "none";
 if(checkAuth()){
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").style.display = "";
   initApp();
+} else {
+  // ensure login overlay is visible and app is hidden
+  document.getElementById("loginOverlay").classList.remove("hidden");
+  document.getElementById("app").style.display = "none";
 }
 
 /* ────────────────────────────────────────────
