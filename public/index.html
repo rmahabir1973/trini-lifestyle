@@ -83,10 +83,18 @@
     box-shadow:var(--shadow);
     overflow:hidden;
   }
-  header.app .sun{position:absolute;top:14px;right:18px;width:54px;height:54px;border-radius:50%;
-    background:radial-gradient(circle at 40% 40%, #ffd88a, var(--sun));box-shadow:0 0 34px rgba(255,184,77,.7);opacity:.9}
-  header.app h1{margin:0;font-size:1.5rem;letter-spacing:.3px;line-height:1.15}
-  header.app .sub{margin-top:4px;font-size:.86rem;opacity:.92}
+  header.app .tt-flag{position:absolute;top:14px;right:18px;width:54px;height:54px;border-radius:50%;
+    overflow:hidden;box-shadow:0 0 20px rgba(0,0,0,.3);opacity:.95;flex-shrink:0}
+  header.app .tt-flag img{width:100%;height:100%;object-fit:cover}
+  header.app .logout-btn{
+    position:absolute;top:14px;left:16px;
+    background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+    color:#fff;border-radius:999px;padding:5px 12px;font-size:.72rem;font-weight:700;
+    cursor:pointer;backdrop-filter:blur(4px);transition:.15s;letter-spacing:.3px;
+  }
+  header.app .logout-btn:hover{background:rgba(255,255,255,.25)}
+  header.app h1{margin:0;font-size:1.5rem;letter-spacing:.3px;line-height:1.15;padding-left:52px}
+  header.app .sub{margin-top:4px;font-size:.86rem;opacity:.92;padding-left:52px}
   .countdown{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
   .cd-box{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);
     backdrop-filter:blur(4px);border-radius:12px;padding:8px 12px;text-align:center;min-width:60px}
@@ -111,6 +119,16 @@
   }
   nav.tabs button .ic{font-size:.95rem}
   nav.tabs button.active{background:var(--teal-600);color:#fff;border-color:var(--teal-600);box-shadow:var(--shadow)}
+  /* Mobile: tighter tabs — emoji + short label, smaller padding */
+  @media(max-width:480px){
+    nav.tabs button{padding:7px 9px;font-size:.72rem;gap:4px}
+    nav.tabs button .ic{font-size:.85rem}
+  }
+  @media(max-width:380px){
+    nav.tabs button .tab-lbl{display:none}
+    nav.tabs button{padding:8px 10px}
+    nav.tabs button .ic{font-size:1.1rem}
+  }
 
   main{max-width:760px;margin:0 auto;padding:16px 14px 40px}
   .panel{display:none;animation:fade .25s ease}
@@ -305,7 +323,8 @@
 <div id="app" style="display:none">
 
 <header class="app">
-  <div class="sun"></div>
+  <button class="logout-btn" id="logoutBtn">Sign out</button>
+  <div class="tt-flag"><img src="icons/tt-circle-01.png" alt="Trinidad & Tobago" /></div>
   <h1>🌴 Trinidad &amp; Tobago 2026</h1>
   <div class="sub">Family trip · Aug 17 – Aug 31 · Ryan, Wendy, Mia &amp; Mavis</div>
   <div class="countdown" id="countdown"></div>
@@ -313,15 +332,15 @@
 </header>
 
 <nav class="tabs" id="tabs">
-  <button data-tab="overview" class="active"><span class="ic">🏝️</span>Overview</button>
-  <button data-tab="itinerary"><span class="ic">🗓️</span>Itinerary</button>
-  <button data-tab="flights"><span class="ic">✈️</span>Flights</button>
-  <button data-tab="stays"><span class="ic">🏠</span>Stays</button>
-  <button data-tab="packing"><span class="ic">🧳</span>Packing</button>
-  <button data-tab="daisy"><span class="ic">🐶</span>Daisy</button>
-  <button data-tab="contacts"><span class="ic">📇</span>Contacts</button>
-  <button data-tab="notes"><span class="ic">📝</span>Notes</button>
-  <button data-tab="attachments"><span class="ic">📎</span>Files</button>
+  <button data-tab="overview" class="active"><span class="ic">🏝️</span><span class="tab-lbl">Overview</span></button>
+  <button data-tab="itinerary"><span class="ic">🗓️</span><span class="tab-lbl">Itinerary</span></button>
+  <button data-tab="flights"><span class="ic">✈️</span><span class="tab-lbl">Flights</span></button>
+  <button data-tab="stays"><span class="ic">🏠</span><span class="tab-lbl">Stays</span></button>
+  <button data-tab="packing"><span class="ic">🧳</span><span class="tab-lbl">Packing</span></button>
+  <button data-tab="daisy"><span class="ic">🐶</span><span class="tab-lbl">Daisy</span></button>
+  <button data-tab="contacts"><span class="ic">📇</span><span class="tab-lbl">Contacts</span></button>
+  <button data-tab="notes"><span class="ic">📝</span><span class="tab-lbl">Notes</span></button>
+  <button data-tab="attachments"><span class="ic">📎</span><span class="tab-lbl">Files</span></button>
 </nav>
 
 <main>
@@ -583,7 +602,7 @@ function initApp(){
     }
   }
 
-  /* ── Boot: open IDB then load attachments ── */
+  /* ── Boot: open IDB then load attachments, then init UI ── */
   openIDB().then(db=>{
     idb = db;
     return idbGetAll();
@@ -595,16 +614,17 @@ function initApp(){
         const old = JSON.parse(localStorage.getItem(ATTACH_KEY)) || [];
         if(old.length > 0){
           attachments = old;
-          // migrate into IDB
           attachments.forEach(a => idbPut(a));
           localStorage.removeItem(ATTACH_KEY);
         }
       }catch(e){}
     }
+    bootUI();
   }).catch(()=>{
     // IDB unavailable — fall back to localStorage
     try{ attachments = JSON.parse(localStorage.getItem(ATTACH_KEY)) || []; }
     catch(e){ attachments = []; }
+    bootUI();
   });
 
   /* ---------- Helpers ---------- */
@@ -1217,36 +1237,33 @@ function initApp(){
     drawAttachments();
   }
 
-  /* ---------- Tabs ---------- */
+  /* ── bootUI: called once IDB is ready ── */
   const renderers={overview:renderOverview,itinerary:renderItinerary,flights:renderFlights,
     stays:renderStays,packing:renderPacking,daisy:renderDaisy,contacts:renderContacts,
     notes:renderNotes,attachments:renderAttachments};
 
-  document.getElementById("tabs").addEventListener("click",e=>{
-    const btn=e.target.closest("button"); if(!btn)return;
-    const tab=btn.dataset.tab;
-    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b===btn));
-    document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id===tab));
-    renderers[tab]();
-    window.scrollTo({top:0,behavior:"smooth"});
-  });
-
-  function renderAll(){
-    const active=document.querySelector("nav.tabs button.active")?.dataset.tab||"overview";
-    renderers[active]();
-    renderCountdown();
-  }
-
-  /* ---------- Init ---------- */
-  renderOverview();
-  renderCountdown();
-  setInterval(renderCountdown,60000);
-
-  /* ---------- Service worker (PWA) ---------- */
-  if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-    window.addEventListener("load",()=>{
-      navigator.serviceWorker.register("sw.js").catch(()=>{});
+  function bootUI(){
+    document.getElementById("logoutBtn").addEventListener("click",()=>{
+      localStorage.removeItem(AUTH_KEY);
+      location.reload();
     });
+
+    document.getElementById("tabs").addEventListener("click",e=>{
+      const btn=e.target.closest("button"); if(!btn)return;
+      const tab=btn.dataset.tab;
+      document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b===btn));
+      document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id===tab));
+      renderers[tab]();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+
+    renderOverview();
+    renderCountdown();
+    setInterval(renderCountdown,60000);
+
+    if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+      window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+    }
   }
 }
 </script>
