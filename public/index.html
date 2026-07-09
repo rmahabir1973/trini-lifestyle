@@ -45,6 +45,33 @@
   }
   a{color:var(--teal-700)}
 
+  /* ── Login overlay ── */
+  #loginOverlay{
+    position:fixed;inset:0;z-index:999;
+    background:radial-gradient(120% 120% at 80% -10%, var(--teal-500) 0%, var(--teal-700) 55%, var(--teal-900) 100%);
+    display:flex;align-items:center;justify-content:center;
+  }
+  #loginOverlay.hidden{display:none}
+  .login-box{
+    background:#fff;border-radius:20px;padding:36px 28px;width:min(360px,92vw);
+    box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center;
+  }
+  .login-box h2{margin:0 0 6px;font-size:1.4rem;color:var(--teal-900)}
+  .login-box p{margin:0 0 24px;font-size:.88rem;color:var(--muted)}
+  .login-box label{display:block;text-align:left;font-size:.78rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px;margin-top:14px}
+  .login-box input[type=text],.login-box input[type=password]{
+    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
+    font-size:.95rem;outline:none;transition:.15s}
+  .login-box input:focus{border-color:var(--teal-500);box-shadow:0 0 0 3px var(--teal-100)}
+  .login-box .remember{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.85rem;color:var(--muted);cursor:pointer}
+  .login-box .remember input{width:18px;height:18px;cursor:pointer;accent-color:var(--teal-600)}
+  .login-btn{
+    margin-top:22px;width:100%;padding:13px;background:var(--teal-600);color:#fff;
+    border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:.15s}
+  .login-btn:active{transform:translateY(1px)}
+  .login-err{color:var(--coral-dark);font-size:.82rem;margin-top:10px;min-height:18px}
+
   /* Header */
   header.app{
     position:relative;
@@ -85,7 +112,7 @@
   nav.tabs button .ic{font-size:.95rem}
   nav.tabs button.active{background:var(--teal-600);color:#fff;border-color:var(--teal-600);box-shadow:var(--shadow)}
 
-  main{max-width:760px;margin:0 auto;padding:16px 14px 90px}
+  main{max-width:760px;margin:0 auto;padding:16px 14px 40px}
   .panel{display:none;animation:fade .25s ease}
   .panel.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -122,6 +149,27 @@
   .day ul{margin:8px 0 0;padding-left:18px}
   .day ul li{font-size:.86rem;margin:3px 0;color:#274d4d}
 
+  /* Editable itinerary */
+  .edit-title{
+    font-weight:700;font-size:.98rem;border:none;background:transparent;
+    width:100%;outline:none;color:var(--ink);padding:0;
+    border-bottom:1px dashed transparent;transition:.15s;
+  }
+  .edit-title:hover,.edit-title:focus{border-bottom-color:var(--teal-500);background:rgba(20,184,166,.05);border-radius:4px;padding:2px 4px}
+  .item-row{display:flex;align-items:center;gap:6px;margin:3px 0}
+  .item-row input{
+    flex:1;font-size:.86rem;color:#274d4d;border:none;background:transparent;
+    outline:none;padding:2px 4px;border-bottom:1px dashed transparent;transition:.15s;
+    font-family:inherit;
+  }
+  .item-row input:hover,.item-row input:focus{border-bottom-color:var(--teal-500);background:rgba(20,184,166,.05);border-radius:4px}
+  .item-del{background:none;border:none;color:#c7bfae;font-size:1rem;cursor:pointer;padding:0 3px;line-height:1;flex:0 0 auto}
+  .item-del:hover{color:var(--coral)}
+  .add-item-row{display:flex;gap:6px;margin-top:8px;align-items:center}
+  .add-item-row input{flex:1;font-size:.84rem;padding:6px 10px;border:1px dashed var(--line);border-radius:8px;background:#fffdf8;font-family:inherit;outline:none}
+  .add-item-row input:focus{border-color:var(--teal-500)}
+  .add-item-row button{font-size:.78rem;padding:6px 10px;background:var(--teal-100);color:var(--teal-700);border:none;border-radius:8px;cursor:pointer;font-weight:700}
+
   /* checklist */
   ul.check{list-style:none;margin:0;padding:0}
   ul.check li{display:flex;align-items:center;gap:11px;padding:9px 4px;border-bottom:1px solid #f0ece0}
@@ -146,11 +194,24 @@
   .btn:active{transform:translateY(1px)}
   .btn.coral{background:var(--coral)}
   .btn.ghost{background:#fff;color:var(--teal-700);border:1px solid var(--line)}
+  .btn.sm{padding:7px 12px;font-size:.8rem}
+  .btn.danger{background:#fff;color:var(--coral-dark);border:1px solid #f5c6c0}
 
   textarea.note{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-family:inherit;
     font-size:.92rem;min-height:90px;resize:vertical;background:#fffdf8}
   textarea.note:focus{outline:2px solid var(--teal-100);border-color:var(--teal-500)}
   .note-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin:8px 2px 6px}
+
+  /* Editable stays */
+  .stay-field{
+    width:100%;border:none;background:transparent;font-size:.86rem;color:var(--ink);
+    padding:2px 4px;border-bottom:1px dashed transparent;transition:.15s;font-family:inherit;outline:none;
+  }
+  .stay-field:hover,.stay-field:focus{border-bottom-color:var(--teal-500);background:rgba(20,184,166,.05);border-radius:4px}
+  .stay-field.big{font-size:.98rem;font-weight:700}
+  .stay-field.small{font-size:.82rem;color:var(--muted)}
+  .stay-row{margin:4px 0;display:flex;align-items:baseline;gap:6px}
+  .stay-row b{font-size:.82rem;color:var(--teal-700);flex:0 0 auto;white-space:nowrap}
 
   /* contacts */
   .contact input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.9rem;margin-top:6px;background:#fff}
@@ -167,8 +228,51 @@
   .who{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
   .who span{font-size:.72rem;background:var(--sand-2);color:#6b5a34;padding:3px 9px;border-radius:999px}
 
-  footer.tools{max-width:760px;margin:0 auto;padding:4px 14px 30px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-  footer.tools button{font-size:.78rem}
+  /* Packing collapsible */
+  .pack-section{border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+  .pack-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:13px 15px;cursor:pointer;user-select:none;
+    background:#fff;transition:.15s;
+  }
+  .pack-header:hover{background:rgba(20,184,166,.04)}
+  .pack-header h3{margin:0;font-size:1rem;display:flex;align-items:center;gap:8px}
+  .pack-toggle{font-size:1rem;color:var(--muted);transition:transform .2s;flex:0 0 auto}
+  .pack-toggle.open{transform:rotate(180deg)}
+  .pack-body{padding:0 15px 15px;border-top:1px solid var(--line)}
+  .pack-body.collapsed{display:none}
+
+  /* Attachments */
+  .attach-drop{
+    border:2px dashed var(--line);border-radius:14px;padding:30px 20px;text-align:center;
+    color:var(--muted);font-size:.9rem;cursor:pointer;transition:.15s;background:#fffdf8;
+  }
+  .attach-drop:hover,.attach-drop.drag{border-color:var(--teal-500);background:var(--teal-100);color:var(--teal-700)}
+  .attach-drop .icon{font-size:2rem;display:block;margin-bottom:6px}
+  .attach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:14px}
+  .attach-card{
+    border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;
+    display:flex;flex-direction:column;gap:6px;position:relative;
+    box-shadow:0 2px 8px rgba(15,61,62,.07);
+  }
+  .attach-card .a-icon{font-size:1.8rem;text-align:center}
+  .attach-card .a-name{font-size:.78rem;font-weight:600;color:var(--ink);word-break:break-word;line-height:1.3}
+  .attach-card .a-meta{font-size:.7rem;color:var(--muted)}
+  .attach-card .a-del{
+    position:absolute;top:6px;right:6px;background:none;border:none;
+    color:#c7bfae;font-size:1rem;cursor:pointer;padding:2px 5px;line-height:1;border-radius:6px;
+  }
+  .attach-card .a-del:hover{color:var(--coral);background:#fff0ee}
+  .attach-card .a-dl{
+    font-size:.72rem;background:var(--teal-100);color:var(--teal-700);border:none;
+    border-radius:8px;padding:5px 8px;cursor:pointer;font-weight:700;text-align:center;
+  }
+  .attach-card .a-dl:hover{background:var(--teal-500);color:#fff}
+  .attach-card img.thumb{width:100%;height:90px;object-fit:cover;border-radius:8px}
+  .attach-section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+    color:var(--muted);margin:18px 2px 8px;display:flex;align-items:center;gap:8px}
+  .attach-section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
   .save-flash{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);
     background:var(--ink);color:#fff;padding:9px 16px;border-radius:999px;font-size:.82rem;opacity:0;
     transition:.25s;pointer-events:none;z-index:50;box-shadow:var(--shadow)}
@@ -178,6 +282,27 @@
 </style>
 </head>
 <body>
+
+<!-- ══════════ LOGIN OVERLAY ══════════ -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div style="font-size:2.5rem;margin-bottom:8px">🌴</div>
+    <h2>Trinidad &amp; Tobago 2026</h2>
+    <p>Family trip planner — please sign in</p>
+    <label for="li-user">Username</label>
+    <input type="text" id="li-user" placeholder="username" autocomplete="username" />
+    <label for="li-pass">Password</label>
+    <input type="password" id="li-pass" placeholder="password" autocomplete="current-password" />
+    <label class="remember">
+      <input type="checkbox" id="li-remember" /> Remember me for 30 days
+    </label>
+    <button class="login-btn" id="li-btn">Sign in</button>
+    <div class="login-err" id="li-err"></div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="app" style="display:none">
 
 <header class="app">
   <div class="sun"></div>
@@ -196,6 +321,7 @@
   <button data-tab="daisy"><span class="ic">🐶</span>Daisy</button>
   <button data-tab="contacts"><span class="ic">📇</span>Contacts</button>
   <button data-tab="notes"><span class="ic">📝</span>Notes</button>
+  <button data-tab="attachments"><span class="ic">📎</span>Files</button>
 </nav>
 
 <main>
@@ -207,14 +333,10 @@
   <section class="panel" id="daisy"></section>
   <section class="panel" id="contacts"></section>
   <section class="panel" id="notes"></section>
+  <section class="panel" id="attachments"></section>
 </main>
 
-<footer class="tools">
-  <button class="btn ghost" id="exportBtn">⬇︎ Backup (export)</button>
-  <button class="btn ghost" id="importBtn">⬆︎ Restore (import)</button>
-  <button class="btn ghost" id="resetBtn">↺ Reset to original</button>
-  <input type="file" id="importFile" accept="application/json" hidden />
-</footer>
+</div><!-- /#app -->
 
 <div class="save-flash" id="flash">Saved ✓</div>
 
@@ -223,9 +345,54 @@
    Trinidad & Tobago 2026 — trip planner
    All data lives in the browser (localStorage). No server needed.
    ============================================================ */
-const STORE_KEY = "trini-trip-2026-v1";
 
-/* ---------- Default (seed) data ---------- */
+/* ────────────────────────────────────────────
+   AUTH
+──────────────────────────────────────────── */
+const AUTH_KEY  = "trini-auth-2026";
+const VALID_USER = "wendy";
+const VALID_PASS = "daisy";
+
+function checkAuth(){
+  try{
+    const a = JSON.parse(localStorage.getItem(AUTH_KEY));
+    if(a && a.user === VALID_USER && a.expires > Date.now()) return true;
+  }catch(e){}
+  return false;
+}
+
+function doLogin(){
+  const u = document.getElementById("li-user").value.trim().toLowerCase();
+  const p = document.getElementById("li-pass").value;
+  const rem = document.getElementById("li-remember").checked;
+  if(u === VALID_USER && p === VALID_PASS){
+    const expires = rem ? Date.now() + 30*24*60*60*1000 : 0;
+    localStorage.setItem(AUTH_KEY, JSON.stringify({user:u, expires: rem ? expires : Date.now()+4*60*60*1000}));
+    document.getElementById("loginOverlay").classList.add("hidden");
+    document.getElementById("app").style.display = "";
+    initApp();
+  } else {
+    document.getElementById("li-err").textContent = "Incorrect username or password.";
+    document.getElementById("li-pass").value = "";
+  }
+}
+
+document.getElementById("li-btn").addEventListener("click", doLogin);
+document.getElementById("li-pass").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+document.getElementById("li-user").addEventListener("keydown", e => { if(e.key==="Enter") document.getElementById("li-pass").focus(); });
+
+if(checkAuth()){
+  document.getElementById("loginOverlay").classList.add("hidden");
+  document.getElementById("app").style.display = "";
+  initApp();
+}
+
+/* ────────────────────────────────────────────
+   STORE
+──────────────────────────────────────────── */
+const STORE_KEY = "trini-trip-2026-v1";
+const ATTACH_KEY = "trini-attach-2026-v1";
+
 function seed(){
   return {
     flights: [
@@ -265,23 +432,27 @@ function seed(){
         host:"Seeragia", conf:"HMNXMPNCD3",
         checkin:"Wed, Aug 26 · 2:00 PM", checkout:"Sat, Aug 29 · 11:00 AM",
         address:"Samaan Grove Development, Road 60, Canaan, Tobago, Trinidad & Tobago",
-        directions:"Samaan Grove Development is off Golden Grove Road in Canaan. From the airport: head East on Milford Road 4.2 km, turn left on Golden Grove Road, head North 800 m — you'll see the Samaan Grove sign and guard booth on your left. Pass through 24-hr security; the villa is on your right. No. 60 is marked outside. From the Scarborough ferry: head West on Claude Noel Highway 9.2 km, turn right on Golden Grove Road, head North 800 m to the same entrance.",
+        directions:"Samaan Grove Development is off Golden Grove Road in Canaan. From the airport: head East on Milford Road 4.2 km, turn left on Golden Grove Road, head North 800 m — you'll see the Samaan Grove sign and guard booth on your left.",
         note:"" },
       { id:"s-donna", name:"Donna & Kester", tag:"Aug 18 · & Aug 29?", tagClass:"",
-        host:"Donna & Kester", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"First stop after landing. Possible stop again Aug 29 after Tobago." },
+        host:"Donna & Kester", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"First stop after landing." },
       { id:"s-myrna", name:"Aunty Myrna", tag:"Aug 19 · & Aug 29?", tagClass:"",
-        host:"Aunty Myrna", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"Visiting Wendy's family. Possible stop again Aug 29." },
+        host:"Aunty Myrna", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"Visiting Wendy's family." },
       { id:"s-debbie", name:"Debbie (South)", tag:"Aug 20 & 23", tagClass:"",
         host:"Debbie", conf:"", checkin:"", checkout:"", address:"", directions:"", note:"Base in the South, around the Mayaro excursion." },
       { id:"s-mayaro", name:"Mayaro Beach", tag:"Aug 21–23", tagClass:"coral",
         host:"", conf:"", checkin:"", checkout:"", address:"Mayaro", directions:"", note:"3-day family beach excursion." }
     ],
     packing: {
-      Ryan: ["Exercise bands","Running shoes","Sandals","Workout clothes","CPAP machine","2 bathing trunks",
-        "Phone charger","5 pairs shorts","1 long jeans","2 dress pants","1 track suit","6 t-shirts",
-        "10 underwear","3 socks","Toothbrush","Toothpaste","Shaving lotion (mini)"],
-      Wendy: ["Happy juice","Collagen","Creatine","Exercise bands","Running shoes","Workout clothes",
-        "Hemp seeds (for yogurt)","Protein powder","Shaker cup","Electrolytes","GBX Burn","GBX Fit","Slynd","M"]
+      lists: [
+        { id:"p-ryan", label:"Ryan", emoji:"👨",
+          items:["Exercise bands","Running shoes","Sandals","Workout clothes","CPAP machine","2 bathing trunks",
+            "Phone charger","5 pairs shorts","1 long jeans","2 dress pants","1 track suit","6 t-shirts",
+            "10 underwear","3 socks","Toothbrush","Toothpaste","Shaving lotion (mini)"] },
+        { id:"p-wendy", label:"Wendy", emoji:"👩",
+          items:["Happy juice","Collagen","Creatine","Exercise bands","Running shoes","Workout clothes",
+            "Hemp seeds (for yogurt)","Protein powder","Shaker cup","Electrolytes","GBX Burn","GBX Fit","Slynd","M"] }
+      ]
     },
     daisy: {
       checklist:["Confirm booking with Clovelly Kennels","Drop off Daisy — Aug 17","Pack her food (14 days)",
@@ -301,369 +472,663 @@ function seed(){
   };
 }
 
-/* ---------- State load/save ---------- */
-let state;
-try{ state = JSON.parse(localStorage.getItem(STORE_KEY)) || seed(); }
-catch(e){ state = seed(); }
-if(!state.text) state.text = {};
-
-let flashTimer;
-function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
-  const f=document.getElementById("flash");
-  f.classList.add("show"); clearTimeout(flashTimer);
-  flashTimer=setTimeout(()=>f.classList.remove("show"),1100);
-}
-
-/* ---------- Helpers ---------- */
-const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
-const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-const uid=()=>"x"+Math.random().toString(36).slice(2,9);
-
-/* ---------- Countdown ---------- */
-function renderCountdown(){
-  const dep=new Date("2026-08-17T18:30:00-04:00");
-  const ret=new Date("2026-08-31T07:10:00-04:00");
-  const now=new Date();
-  const box=document.getElementById("countdown");
-  const note=document.getElementById("cdNote");
-  box.innerHTML="";
-  if(now>=ret){ note.textContent="Welcome home! 🌴 Hope it was amazing."; return; }
-  if(now>=dep && now<ret){
-    note.textContent="You're in Trinidad & Tobago right now — enjoy every minute! 🏝️";
-    const daysLeft=Math.ceil((ret-now)/86400000);
-    box.appendChild(mkBox(daysLeft,"days left"));
-    return;
+/* ────────────────────────────────────────────
+   INIT APP (called after login)
+──────────────────────────────────────────── */
+function initApp(){
+  let state;
+  try{ state = JSON.parse(localStorage.getItem(STORE_KEY)) || seed(); }
+  catch(e){ state = seed(); }
+  if(!state.text) state.text = {};
+  // migrate old packing format (Ryan/Wendy arrays) → new lists format
+  if(state.packing && !state.packing.lists){
+    state.packing = { lists: [
+      { id:"p-ryan",  label:"Ryan",  emoji:"👨", items: state.packing.Ryan  || [] },
+      { id:"p-wendy", label:"Wendy", emoji:"👩", items: state.packing.Wendy || [] }
+    ]};
   }
-  const diff=dep-now;
-  const d=Math.floor(diff/86400000);
-  const h=Math.floor(diff%86400000/3600000);
-  const m=Math.floor(diff%3600000/60000);
-  box.appendChild(mkBox(d,"days"));
-  box.appendChild(mkBox(h,"hours"));
-  box.appendChild(mkBox(m,"mins"));
-  note.textContent="Countdown to takeoff ✈️";
-}
-function mkBox(n,l){const b=el("div","cd-box");b.innerHTML="<b>"+n+"</b><span>"+l+"</span>";return b;}
 
-/* ---------- Editable note field ---------- */
-function noteField(key,label,ph){
-  const wrap=el("div");
-  if(label) wrap.appendChild(el("div","note-lbl",label));
-  const ta=el("textarea","note");
-  ta.placeholder=ph||"Type here…";
-  ta.value=state.text[key]||"";
-  ta.addEventListener("input",()=>{state.text[key]=ta.value;save();});
-  wrap.appendChild(ta);
-  return wrap;
-}
+  let attachments;
+  try{ attachments = JSON.parse(localStorage.getItem(ATTACH_KEY)) || []; }
+  catch(e){ attachments = []; }
 
-/* ---------- Checklist renderer ---------- */
-function checklist(ns, items, {allowAdd=true, addPh="Add item…", onChange}={}){
-  const wrap=el("div");
-  const prog=el("div","progress"); const bar=el("i"); prog.appendChild(bar);
-  const badge=el("div","count-badge");
-  wrap.appendChild(badge); wrap.appendChild(prog);
-  const ul=el("ul","check");
-  function doneKey(item){return "done:"+ns+":"+item;}
-  function refresh(){
-    const total=items.length;
-    const done=items.filter(i=>state.text[doneKey(i)]).length;
-    bar.style.width=(total?Math.round(done/total*100):0)+"%";
-    badge.textContent=done+" / "+total+" done";
+  let flashTimer;
+  function save(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+    const f=document.getElementById("flash");
+    f.classList.add("show"); clearTimeout(flashTimer);
+    flashTimer=setTimeout(()=>f.classList.remove("show"),1100);
   }
-  function draw(){
-    ul.innerHTML="";
-    items.forEach((item)=>{
-      const li=el("li"); const id=uid();
-      const cb=el("input"); cb.type="checkbox"; cb.id=id;
-      const on=!!state.text[doneKey(item)];
-      cb.checked=on; if(on) li.classList.add("done");
-      cb.addEventListener("change",()=>{
-        state.text[doneKey(item)]=cb.checked;
-        li.classList.toggle("done",cb.checked); refresh(); save();
+  function saveAttachments(){
+    try{ localStorage.setItem(ATTACH_KEY, JSON.stringify(attachments)); }catch(e){}
+  }
+
+  /* ---------- Helpers ---------- */
+  const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+  const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+  const uid=()=>"x"+Math.random().toString(36).slice(2,9);
+
+  /* ---------- Countdown ---------- */
+  function renderCountdown(){
+    const dep=new Date("2026-08-17T18:30:00-04:00");
+    const ret=new Date("2026-08-31T07:10:00-04:00");
+    const now=new Date();
+    const box=document.getElementById("countdown");
+    const note=document.getElementById("cdNote");
+    box.innerHTML="";
+    if(now>=ret){ note.textContent="Welcome home! 🌴 Hope it was amazing."; return; }
+    if(now>=dep && now<ret){
+      note.textContent="You're in Trinidad & Tobago right now — enjoy every minute! 🏝️";
+      const daysLeft=Math.ceil((ret-now)/86400000);
+      box.appendChild(mkBox(daysLeft,"days left"));
+      return;
+    }
+    const diff=dep-now;
+    const d=Math.floor(diff/86400000);
+    const h=Math.floor(diff%86400000/3600000);
+    const m=Math.floor(diff%3600000/60000);
+    box.appendChild(mkBox(d,"days"));
+    box.appendChild(mkBox(h,"hours"));
+    box.appendChild(mkBox(m,"mins"));
+    note.textContent="Countdown to takeoff ✈️";
+  }
+  function mkBox(n,l){const b=el("div","cd-box");b.innerHTML="<b>"+n+"</b><span>"+l+"</span>";return b;}
+
+  /* ---------- Editable note field ---------- */
+  function noteField(key,label,ph){
+    const wrap=el("div");
+    if(label) wrap.appendChild(el("div","note-lbl",label));
+    const ta=el("textarea","note");
+    ta.placeholder=ph||"Type here…";
+    ta.value=state.text[key]||"";
+    ta.addEventListener("input",()=>{state.text[key]=ta.value;save();});
+    wrap.appendChild(ta);
+    return wrap;
+  }
+
+  /* ---------- Checklist renderer ---------- */
+  function checklist(ns, items, {allowAdd=true, addPh="Add item…", onChange}={}){
+    const wrap=el("div");
+    const prog=el("div","progress"); const bar=el("i"); prog.appendChild(bar);
+    const badge=el("div","count-badge");
+    wrap.appendChild(badge); wrap.appendChild(prog);
+    const ul=el("ul","check");
+    function doneKey(item){return "done:"+ns+":"+item;}
+    function refresh(){
+      const total=items.length;
+      const done=items.filter(i=>state.text[doneKey(i)]).length;
+      bar.style.width=(total?Math.round(done/total*100):0)+"%";
+      badge.textContent=done+" / "+total+" done";
+    }
+    function draw(){
+      ul.innerHTML="";
+      items.forEach((item)=>{
+        const li=el("li"); const id=uid();
+        const cb=el("input"); cb.type="checkbox"; cb.id=id;
+        const on=!!state.text[doneKey(item)];
+        cb.checked=on; if(on) li.classList.add("done");
+        cb.addEventListener("change",()=>{
+          state.text[doneKey(item)]=cb.checked;
+          li.classList.toggle("done",cb.checked); refresh(); save();
+        });
+        const lb=el("label"); lb.htmlFor=id; lb.textContent=item;
+        const del=el("button","del","×"); del.title="Remove";
+        del.addEventListener("click",()=>{
+          const ix=items.indexOf(item); if(ix>-1)items.splice(ix,1);
+          delete state.text[doneKey(item)];
+          if(onChange)onChange(); draw(); refresh(); save();
+        });
+        li.appendChild(cb); li.appendChild(lb); li.appendChild(del);
+        ul.appendChild(li);
       });
-      const lb=el("label"); lb.htmlFor=id; lb.textContent=item;
-      const del=el("button","del","×"); del.title="Remove";
-      del.addEventListener("click",()=>{
-        const ix=items.indexOf(item); if(ix>-1)items.splice(ix,1);
-        delete state.text[doneKey(item)];
-        if(onChange)onChange(); draw(); refresh(); save();
-      });
-      li.appendChild(cb); li.appendChild(lb); li.appendChild(del);
-      ul.appendChild(li);
+    }
+    wrap.appendChild(ul);
+    if(allowAdd){
+      const row=el("div","addrow");
+      const inp=el("input"); inp.type="text"; inp.placeholder=addPh;
+      const b=el("button","btn","Add");
+      const add=()=>{const v=inp.value.trim(); if(!v)return; items.push(v); inp.value="";
+        if(onChange)onChange(); draw(); refresh(); save();};
+      b.addEventListener("click",add);
+      inp.addEventListener("keydown",e=>{if(e.key==="Enter")add();});
+      row.appendChild(inp); row.appendChild(b); wrap.appendChild(row);
+    }
+    draw(); refresh();
+    return wrap;
+  }
+
+  /* ═══════════════════════════════════════════
+     RENDERERS
+  ═══════════════════════════════════════════ */
+
+  function renderOverview(){
+    const p=document.getElementById("overview"); p.innerHTML="";
+    p.appendChild(el("h2","section","🏝️ Trip at a glance"));
+    const c1=el("div","card");
+    c1.innerHTML=`
+      <div class="kv"><b>Dates:</b> Mon 17 Aug → Mon 31 Aug 2026 (15 days)</div>
+      <div class="kv"><b>Travellers:</b> Ryan, Wendy, Mia &amp; Mavis</div>
+      <div class="kv"><b>Base:</b> Trinidad — with a Tobago getaway (Aug 26–29)</div>
+      <div class="kv"><b>Highlight:</b> Mayaro beach excursion (Aug 21–23) 🏖️</div>
+      <div class="kv"><b>Daisy 🐶:</b> Boarding at Clovelly Kennels, Aug 17–31</div>`;
+    p.appendChild(c1);
+    const key=el("div","card");
+    key.innerHTML=`<h3>Key dates</h3>`;
+    const rows=[
+      ["✈️","Aug 17","Fly out YYZ → POS (AC0984, 6:30 PM)"],
+      ["🏖️","Aug 21–23","Mayaro beach excursion"],
+      ["🛫","Aug 26","Fly to Tobago (BW1514) · AirBnB check-in"],
+      ["🏠","Aug 29","AirBnB checkout · fly back (BW1513)"],
+      ["✈️","Aug 31","Fly home POS → YYZ (1:25 AM)"]
+    ];
+    rows.forEach(r=>{
+      const d=el("div","kv"); d.innerHTML=`${r[0]} <b>${r[1]}</b> — ${esc(r[2])}`; key.appendChild(d);
+    });
+    p.appendChild(key);
+    const tips=el("div","card");
+    tips.innerHTML=`<h3>How to use this app</h3>
+      <div class="meta" style="line-height:1.6;margin-top:6px">
+        Everything you check or type is saved right on this device — no login needed after first sign-in.
+        Tap the tabs above to move around. Use <b>Packing</b> and <b>Daisy</b> to tick things off,
+        and <b>Files</b> to upload boarding passes, confirmations, and other documents.
+      </div>`;
+    p.appendChild(tips);
+  }
+
+  /* ── ITINERARY (editable) ── */
+  function renderItinerary(){
+    const p=document.getElementById("itinerary"); p.innerHTML="";
+    p.appendChild(el("h2","section","🗓️ Day-by-day"));
+    p.appendChild(el("p","hint","Tap any title or bullet to edit. Use + to add items."));
+    state.itinerary.forEach((day, dayIdx)=>{
+      const card=el("div","card day");
+      const row=el("div","day-row");
+
+      // date chip
+      const chip=el("div","datechip"); chip.style.background=
+        day.tone==="coral"?"var(--coral)":(day.tone==="sun"?"var(--sun)":"var(--teal-600)");
+      if(day.tone==="sun") chip.style.color="#5a3d05";
+      chip.innerHTML=`<b>${day.d}</b><span>${day.dow}</span>`;
+
+      const body=el("div","body");
+
+      // editable title
+      const titleInp = el("input","edit-title");
+      titleInp.value = day.title;
+      titleInp.addEventListener("input", ()=>{ day.title = titleInp.value; save(); });
+      body.appendChild(titleInp);
+
+      // editable items list
+      const itemsWrap = el("div"); itemsWrap.style.marginTop = "8px";
+
+      function drawItems(){
+        itemsWrap.innerHTML = "";
+        day.items.forEach((item, idx)=>{
+          const ir = el("div","item-row");
+          const bullet = el("span"); bullet.textContent = "•"; bullet.style.cssText="color:var(--teal-600);flex:0 0 auto;font-size:.9rem";
+          const inp = el("input");
+          inp.value = item;
+          inp.addEventListener("input", ()=>{ day.items[idx] = inp.value; save(); });
+          const delBtn = el("button","item-del","×"); delBtn.title="Remove";
+          delBtn.addEventListener("click", ()=>{ day.items.splice(idx,1); drawItems(); save(); });
+          ir.appendChild(bullet); ir.appendChild(inp); ir.appendChild(delBtn);
+          itemsWrap.appendChild(ir);
+        });
+        // add item row
+        const addRow = el("div","add-item-row");
+        const addInp = el("input"); addInp.placeholder = "Add item…";
+        const addBtn = el("button"); addBtn.textContent = "+ Add";
+        const doAdd = ()=>{
+          const v = addInp.value.trim(); if(!v) return;
+          day.items.push(v); addInp.value = ""; drawItems(); save();
+        };
+        addBtn.addEventListener("click", doAdd);
+        addInp.addEventListener("keydown", e=>{ if(e.key==="Enter") doAdd(); });
+        addRow.appendChild(addInp); addRow.appendChild(addBtn);
+        itemsWrap.appendChild(addRow);
+      }
+      drawItems();
+      body.appendChild(itemsWrap);
+
+      row.appendChild(chip); row.appendChild(body);
+      card.appendChild(row);
+      card.appendChild(noteField("day:"+day.d,"","Notes / changes for Aug "+day.d+"…"));
+      p.appendChild(card);
     });
   }
-  wrap.appendChild(ul);
-  if(allowAdd){
+
+  function renderFlights(){
+    const p=document.getElementById("flights"); p.innerHTML="";
+    p.appendChild(el("h2","section","✈️ Flights"));
+    p.appendChild(el("p","hint","Add confirmation/seat details to each flight below."));
+    state.flights.forEach(f=>{
+      const card=el("div","card");
+      const head=el("div","flight-head");
+      head.innerHTML=`<span class="pill ${f.tagClass}">${esc(f.tag)}</span>
+        <span class="meta">${esc(f.date)}</span>`;
+      card.appendChild(head);
+      const fl=el("div","flight"); fl.style.marginTop="8px";
+      fl.innerHTML=`<div class="route">
+          <div class="code">${esc(f.from)}</div>
+          <div class="arrow">→</div>
+          <div class="code">${esc(f.to)}</div>
+        </div>
+        <div style="text-align:right">
+          ${f.code?`<div style="font-weight:800;color:var(--teal-700)">${esc(f.code)}</div>`:``}
+          <div class="times">${esc(f.times)}</div>
+        </div>`;
+      card.appendChild(fl);
+      const who=el("div","who"); f.pax.forEach(x=>{const s=el("span");s.textContent=x;who.appendChild(s);});
+      card.appendChild(who);
+      if(f.note){const n=el("div","banner");n.textContent="⏰ "+f.note;n.style.marginTop="10px";n.style.marginBottom="0";card.appendChild(n);}
+      const conf=el("div"); conf.style.marginTop="10px";
+      conf.appendChild(el("div","note-lbl","Confirmation / booking ref"));
+      const ci=el("input"); ci.type="text"; ci.placeholder="e.g. ABC123";
+      ci.style.cssText="width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.9rem;background:#fff";
+      ci.value=state.text["flightconf:"+f.id]||"";
+      ci.addEventListener("input",()=>{state.text["flightconf:"+f.id]=ci.value;save();});
+      conf.appendChild(ci);
+      card.appendChild(conf);
+      card.appendChild(noteField("flightnote:"+f.id,"Seats / baggage / notes","e.g. seats 12A–12D, checked bags…"));
+      p.appendChild(card);
+    });
+  }
+
+  /* ── STAYS (editable) ── */
+  function renderStays(){
+    const p=document.getElementById("stays"); p.innerHTML="";
+    p.appendChild(el("h2","section","🏠 Where we're staying"));
+    p.appendChild(el("p","hint","Tap any field to edit stay details."));
+
+    function drawStays(){
+      // remove existing stay cards (keep h2 and hint)
+      while(p.children.length > 2) p.removeChild(p.lastChild);
+
+      state.stays.forEach((s, sIdx)=>{
+        const card = el("div","card");
+
+        // header row with name + tag + delete
+        const hrow = el("div","flight-head");
+        const nameInp = el("input","stay-field big");
+        nameInp.value = s.name;
+        nameInp.style.flex="1";
+        nameInp.addEventListener("input",()=>{ s.name=nameInp.value; save(); });
+
+        const tagInp = el("input","pill");
+        tagInp.style.cssText="border:1px dashed var(--line);background:var(--teal-100);color:var(--teal-700);font-size:.68rem;padding:3px 9px;border-radius:999px;width:120px;text-align:center;outline:none";
+        if(s.tagClass==="coral") tagInp.style.cssText+="background:#ffe3de;color:var(--coral-dark);";
+        if(s.tagClass==="sun")   tagInp.style.cssText+="background:#fff0d6;color:#a86a12;";
+        tagInp.value = s.tag;
+        tagInp.addEventListener("input",()=>{ s.tag=tagInp.value; save(); });
+
+        const delBtn = el("button","del","×"); delBtn.title="Remove stay";
+        delBtn.addEventListener("click",()=>{ state.stays.splice(sIdx,1); drawStays(); save(); });
+
+        hrow.appendChild(nameInp); hrow.appendChild(tagInp); hrow.appendChild(delBtn);
+        card.appendChild(hrow);
+
+        // editable field helper
+        function stayRow(label, field, ph, type="text"){
+          const row = el("div","stay-row");
+          const lbl = el("b"); lbl.textContent = label+":"; row.appendChild(lbl);
+          const inp = el("input","stay-field small");
+          inp.type = type; inp.placeholder = ph; inp.value = s[field]||"";
+          inp.addEventListener("input",()=>{ s[field]=inp.value; save(); });
+          row.appendChild(inp); card.appendChild(row);
+        }
+        stayRow("Host","host","Host name");
+        stayRow("Confirmation","conf","Booking ref / conf #");
+        stayRow("Check-in","checkin","Date & time");
+        stayRow("Checkout","checkout","Date & time");
+        stayRow("Address","address","Street address");
+
+        // directions (textarea)
+        if(s.directions !== undefined){
+          const dlbl = el("div","note-lbl","Directions"); card.appendChild(dlbl);
+          const dta = el("textarea","note"); dta.style.minHeight="70px";
+          dta.placeholder="Directions from host…"; dta.value=s.directions||"";
+          dta.addEventListener("input",()=>{ s.directions=dta.value; save(); });
+          card.appendChild(dta);
+        }
+
+        card.appendChild(noteField("stay:"+s.id,"Notes","Notes for this stay…"));
+        p.appendChild(card);
+      });
+
+      // Add new stay button
+      const addBtn = el("button","btn ghost","+ Add stay");
+      addBtn.style.width="100%";
+      addBtn.addEventListener("click",()=>{
+        state.stays.push({id:uid(),name:"New stay",tag:"",tagClass:"",host:"",conf:"",checkin:"",checkout:"",address:"",directions:"",note:""});
+        drawStays(); save();
+      });
+      p.appendChild(addBtn);
+    }
+    drawStays();
+  }
+
+  /* ── PACKING (collapsible + add list) ── */
+  function renderPacking(){
+    const p=document.getElementById("packing"); p.innerHTML="";
+    p.appendChild(el("h2","section","🧳 Packing lists"));
+    p.appendChild(el("p","hint","Tap ▾ to expand/collapse. Tap a box to mark packed. Add lists for each traveller."));
+
+    const OPEN_KEY = "pack-open-state";
+    let openSections;
+    try{ openSections = JSON.parse(localStorage.getItem(OPEN_KEY)) || {}; }
+    catch(e){ openSections = {}; }
+    function saveOpen(){ try{ localStorage.setItem(OPEN_KEY, JSON.stringify(openSections)); }catch(e){} }
+
+    function drawPacking(){
+      while(p.children.length > 2) p.removeChild(p.lastChild);
+
+      state.packing.lists.forEach((list, lIdx)=>{
+        const isOpen = openSections[list.id] !== false; // default open
+
+        const section = el("div","pack-section");
+
+        // header
+        const header = el("div","pack-header");
+        const h3 = el("h3");
+        h3.innerHTML = `<span>${list.emoji||"🧳"}</span> `;
+        const nameInp = document.createElement("input");
+        nameInp.value = list.label;
+        nameInp.style.cssText="border:none;background:transparent;font-size:1rem;font-weight:700;color:var(--ink);outline:none;padding:0;font-family:inherit;width:auto;max-width:180px";
+        nameInp.addEventListener("click",e=>e.stopPropagation());
+        nameInp.addEventListener("input",()=>{ list.label=nameInp.value; save(); });
+        h3.appendChild(nameInp);
+
+        const emojiInp = document.createElement("input");
+        emojiInp.value = list.emoji||"🧳";
+        emojiInp.maxLength=2;
+        emojiInp.title="Emoji icon";
+        emojiInp.style.cssText="border:none;background:transparent;font-size:.9rem;outline:none;width:28px;margin-left:4px;font-family:inherit;color:var(--muted);padding:0";
+        emojiInp.addEventListener("click",e=>e.stopPropagation());
+        emojiInp.addEventListener("input",()=>{ list.emoji=emojiInp.value; h3.firstChild.textContent=list.emoji+" "; save(); });
+
+        const delListBtn = el("button","del","×");
+        delListBtn.title = "Remove this list";
+        delListBtn.style.marginLeft="6px";
+        delListBtn.addEventListener("click",e=>{
+          e.stopPropagation();
+          if(confirm("Remove "+list.label+"'s packing list?")){
+            state.packing.lists.splice(lIdx,1); drawPacking(); save();
+          }
+        });
+
+        header.appendChild(h3);
+        const rightSide = el("div"); rightSide.style.cssText="display:flex;align-items:center;gap:8px";
+        const badge = el("span","count-badge");
+        const toggle = el("span","pack-toggle"+(isOpen?" open":""),"▾");
+        rightSide.appendChild(emojiInp); rightSide.appendChild(delListBtn); rightSide.appendChild(badge); rightSide.appendChild(toggle);
+        header.appendChild(rightSide);
+
+        // body
+        const body = el("div","pack-body"+(isOpen?"":" collapsed"));
+
+        const cl = checklist("pack-"+list.id, list.items, {addPh:"Add to "+list.label+"'s list…"});
+        // update badge after checklist renders
+        const badgeEl = cl.querySelector(".count-badge");
+        if(badgeEl) badge.textContent = badgeEl.textContent;
+        // keep badge in sync by observing changes
+        const mo = new MutationObserver(()=>{ const b=cl.querySelector(".count-badge"); if(b) badge.textContent=b.textContent; });
+        mo.observe(cl, {childList:true, subtree:true, characterData:true});
+
+        body.appendChild(cl);
+        section.appendChild(header);
+        section.appendChild(body);
+
+        header.addEventListener("click",()=>{
+          const nowOpen = body.classList.contains("collapsed");
+          body.classList.toggle("collapsed", !nowOpen);
+          toggle.classList.toggle("open", nowOpen);
+          openSections[list.id] = nowOpen;
+          saveOpen();
+        });
+
+        p.appendChild(section);
+      });
+
+      // Add new list
+      const addRow = el("div","addrow");
+      const inp = el("input"); inp.type="text"; inp.placeholder="New list name (e.g. Mia)";
+      const btn = el("button","btn","+ Add list");
+      const doAdd = ()=>{
+        const v = inp.value.trim(); if(!v) return;
+        state.packing.lists.push({id:uid(), label:v, emoji:"🧳", items:[]});
+        inp.value=""; drawPacking(); save();
+      };
+      btn.addEventListener("click", doAdd);
+      inp.addEventListener("keydown", e=>{ if(e.key==="Enter") doAdd(); });
+      addRow.appendChild(inp); addRow.appendChild(btn);
+      p.appendChild(addRow);
+    }
+    drawPacking();
+  }
+
+  function renderDaisy(){
+    const p=document.getElementById("daisy"); p.innerHTML="";
+    p.appendChild(el("h2","section","🐶 Daisy — Clovelly Kennels"));
+    const info=el("div","card");
+    info.innerHTML=`
+      <div class="flight-head"><h3 style="margin:0">Boarding stay</h3><span class="pill coral">Aug 17 – 31</span></div>
+      <div class="kv"><b>Where:</b> Clovelly Kennels</div>
+      <div class="kv"><b>Drop-off:</b> Mon, Aug 17 (before we leave for the airport)</div>
+      <div class="kv"><b>Pick-up:</b> Mon, Aug 31 (after we land, 7:10 AM)</div>`;
+    p.appendChild(info);
+    const card=el("div","card");
+    card.appendChild(el("h3",null,"Daisy's checklist"));
+    card.appendChild(checklist("daisy", state.daisy.checklist, {addPh:"Add for Daisy…"}));
+    p.appendChild(card);
+    const notes=el("div","card");
+    notes.appendChild(el("h3",null,"Kennel notes"));
+    notes.appendChild(noteField("daisy-notes","","Feeding schedule, vet info, quirks, pick-up instructions…"));
+    p.appendChild(notes);
+  }
+
+  function renderContacts(){
+    const p=document.getElementById("contacts"); p.innerHTML="";
+    p.appendChild(el("h2","section","📇 Contacts"));
+    p.appendChild(el("p","hint","Tap a field to add phone numbers and notes."));
+    const list=el("div"); p.appendChild(list);
+    function draw(){
+      list.innerHTML="";
+      state.contacts.forEach(c=>{
+        const card=el("div","card contact");
+        const head=el("div","contact-head");
+        head.innerHTML=`<h3 style="margin:0">${esc(c.name||"New contact")}</h3>`;
+        const del=el("button","del","×");
+        del.addEventListener("click",()=>{state.contacts=state.contacts.filter(x=>x.id!==c.id);draw();save();});
+        head.appendChild(del);
+        card.appendChild(head);
+        const role=el("div","meta"); role.textContent=c.role||""; card.appendChild(role);
+        const grid=el("div","grid");
+        const pn=el("input");pn.type="tel";pn.placeholder="Phone";pn.value=c.phone||"";
+        pn.addEventListener("input",()=>{c.phone=pn.value;save();});
+        const nt=el("input");nt.type="text";nt.placeholder="Note";nt.value=c.note||"";
+        nt.addEventListener("input",()=>{c.note=nt.value;save();});
+        grid.appendChild(pn);grid.appendChild(nt);
+        card.appendChild(grid);
+        list.appendChild(card);
+      });
+    }
+    draw();
     const row=el("div","addrow");
-    const inp=el("input"); inp.type="text"; inp.placeholder=addPh;
+    const inp=el("input");inp.type="text";inp.placeholder="New contact name…";
     const b=el("button","btn","Add");
-    const add=()=>{const v=inp.value.trim(); if(!v)return; items.push(v); inp.value="";
-      if(onChange)onChange(); draw(); refresh(); save();};
+    const add=()=>{const v=inp.value.trim();if(!v)return;state.contacts.push({id:uid(),name:v,role:"",phone:"",note:""});inp.value="";draw();save();};
     b.addEventListener("click",add);
     inp.addEventListener("keydown",e=>{if(e.key==="Enter")add();});
-    row.appendChild(inp); row.appendChild(b); wrap.appendChild(row);
+    row.appendChild(inp);row.appendChild(b);p.appendChild(row);
   }
-  draw(); refresh();
-  return wrap;
-}
 
-/* ================= RENDERERS ================= */
-function renderOverview(){
-  const p=document.getElementById("overview"); p.innerHTML="";
-  p.appendChild(el("h2","section","🏝️ Trip at a glance"));
+  function renderNotes(){
+    const p=document.getElementById("notes"); p.innerHTML="";
+    p.appendChild(el("h2","section","📝 Notes & to-do"));
+    const td=el("div","card");
+    td.appendChild(el("h3",null,"Pre-trip to-do"));
+    td.appendChild(checklist("todo", state.todo, {addPh:"Add a to-do…"}));
+    p.appendChild(td);
+    const n=el("div","card");
+    n.appendChild(el("h3",null,"Shared notes"));
+    n.appendChild(noteField("shared-notes","","Anything and everything — gift ideas, food to buy, people to see…"));
+    p.appendChild(n);
+  }
 
-  const c1=el("div","card");
-  c1.innerHTML=`
-    <div class="kv"><b>Dates:</b> Mon 17 Aug → Mon 31 Aug 2026 (15 days)</div>
-    <div class="kv"><b>Travellers:</b> Ryan, Wendy, Mia &amp; Mavis</div>
-    <div class="kv"><b>Base:</b> Trinidad — with a Tobago getaway (Aug 26–29)</div>
-    <div class="kv"><b>Highlight:</b> Mayaro beach excursion (Aug 21–23) 🏖️</div>
-    <div class="kv"><b>Daisy 🐶:</b> Boarding at Clovelly Kennels, Aug 17–31</div>`;
-  p.appendChild(c1);
+  /* ── ATTACHMENTS ── */
+  function fileIcon(type){
+    if(type.startsWith("image/")) return "🖼️";
+    if(type==="application/pdf") return "📄";
+    if(type.includes("word")) return "📝";
+    if(type.includes("sheet")||type.includes("excel")) return "📊";
+    return "📎";
+  }
+  function fmtSize(b){ if(b<1024) return b+"B"; if(b<1048576) return (b/1024).toFixed(1)+"KB"; return (b/1048576).toFixed(1)+"MB"; }
 
-  const key=el("div","card");
-  key.innerHTML=`<h3>Key dates</h3>`;
-  const rows=[
-    ["✈️","Aug 17","Fly out YYZ → POS (AC0984, 6:30 PM)"],
-    ["🏖️","Aug 21–23","Mayaro beach excursion"],
-    ["🛫","Aug 26","Fly to Tobago (BW1514) · AirBnB check-in"],
-    ["🏠","Aug 29","AirBnB checkout · fly back (BW1513)"],
-    ["✈️","Aug 31","Fly home POS → YYZ (1:25 AM)"]
-  ];
-  rows.forEach(r=>{
-    const d=el("div","kv"); d.innerHTML=`${r[0]} <b>${r[1]}</b> — ${esc(r[2])}`; key.appendChild(d);
-  });
-  p.appendChild(key);
+  // categories
+  const ATTACH_CATS = ["Flights","Stays","Insurance","Packing","Other"];
 
-  const tips=el("div","card");
-  tips.innerHTML=`<h3>How to use this app</h3>
-    <div class="meta" style="line-height:1.6;margin-top:6px">
-      Everything you check or type is saved right on this device — no login, works offline.
-      Tap the tabs above to move around. Use <b>Packing</b> and <b>Daisy</b> to tick things off,
-      and the <b>Backup</b> button at the bottom to save a copy or move it to another phone.
-    </div>`;
-  p.appendChild(tips);
-}
+  function renderAttachments(){
+    const p=document.getElementById("attachments"); p.innerHTML="";
+    p.appendChild(el("h2","section","📎 Files & attachments"));
+    p.appendChild(el("p","hint","Upload boarding passes, confirmations, travel insurance, and other documents. Stored on this device only."));
 
-function renderItinerary(){
-  const p=document.getElementById("itinerary"); p.innerHTML="";
-  p.appendChild(el("h2","section","🗓️ Day-by-day"));
-  p.appendChild(el("p","hint","Plans are tentative — tap a day's note box to jot changes."));
-  state.itinerary.forEach((day)=>{
-    const card=el("div","card day");
-    const row=el("div","day-row");
-    const chip=el("div","datechip"); chip.style.background=
-      day.tone==="coral"?"var(--coral)":(day.tone==="sun"?"var(--sun)":"var(--teal-600)");
-    if(day.tone==="sun") chip.style.color="#5a3d05";
-    chip.innerHTML=`<b>${day.d}</b><span>${day.dow}</span>`;
-    const body=el("div","body");
-    body.innerHTML=`<div class="title">${esc(day.title)}</div>`;
-    const ul=el("ul");
-    day.items.forEach(i=>{const li=el("li");li.textContent=i;ul.appendChild(li);});
-    body.appendChild(ul);
-    row.appendChild(chip); row.appendChild(body);
-    card.appendChild(row);
-    card.appendChild(noteField("day:"+day.d,"","Notes / changes for Aug "+day.d+"…"));
-    p.appendChild(card);
-  });
-}
+    function drawAttachments(){
+      // remove old content below hint
+      while(p.children.length > 2) p.removeChild(p.lastChild);
 
-function renderFlights(){
-  const p=document.getElementById("flights"); p.innerHTML="";
-  p.appendChild(el("h2","section","✈️ Flights"));
-  p.appendChild(el("p","hint","Add confirmation/seat details to each flight below."));
-  state.flights.forEach(f=>{
-    const card=el("div","card");
-    const head=el("div","flight-head");
-    head.innerHTML=`<span class="pill ${f.tagClass}">${esc(f.tag)}</span>
-      <span class="meta">${esc(f.date)}</span>`;
-    card.appendChild(head);
-    const fl=el("div","flight"); fl.style.marginTop="8px";
-    fl.innerHTML=`<div class="route">
-        <div class="code">${esc(f.from)}</div>
-        <div class="arrow">→</div>
-        <div class="code">${esc(f.to)}</div>
-      </div>
-      <div style="text-align:right">
-        ${f.code?`<div style="font-weight:800;color:var(--teal-700)">${esc(f.code)}</div>`:``}
-        <div class="times">${esc(f.times)}</div>
-      </div>`;
-    card.appendChild(fl);
-    const who=el("div","who"); f.pax.forEach(x=>{const s=el("span");s.textContent=x;who.appendChild(s);});
-    card.appendChild(who);
-    if(f.note){const n=el("div","banner");n.textContent="⏰ "+f.note;n.style.marginTop="10px";n.style.marginBottom="0";card.appendChild(n);}
+      // upload area
+      const dropArea = el("div","attach-drop");
+      dropArea.innerHTML=`<span class="icon">📎</span>Tap to upload a file`;
+      const fileInput = document.createElement("input");
+      fileInput.type="file"; fileInput.multiple=true; fileInput.hidden=true;
+      fileInput.accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg";
 
-    const conf=el("div"); conf.style.marginTop="10px";
-    conf.appendChild(el("div","note-lbl","Confirmation / booking ref"));
-    const ci=el("input"); ci.type="text"; ci.placeholder="e.g. ABC123";
-    ci.style.cssText="width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:.9rem;background:#fff";
-    ci.value=state.text["flightconf:"+f.id]||"";
-    ci.addEventListener("input",()=>{state.text["flightconf:"+f.id]=ci.value;save();});
-    conf.appendChild(ci);
-    card.appendChild(conf);
-    card.appendChild(noteField("flightnote:"+f.id,"Seats / baggage / notes","e.g. seats 12A–12D, checked bags…"));
-    p.appendChild(card);
-  });
-}
+      dropArea.addEventListener("click",()=>fileInput.click());
+      dropArea.addEventListener("dragover",e=>{e.preventDefault();dropArea.classList.add("drag");});
+      dropArea.addEventListener("dragleave",()=>dropArea.classList.remove("drag"));
+      dropArea.addEventListener("drop",e=>{e.preventDefault();dropArea.classList.remove("drag");handleFiles(e.dataTransfer.files);});
+      fileInput.addEventListener("change",()=>handleFiles(fileInput.files));
 
-function renderStays(){
-  const p=document.getElementById("stays"); p.innerHTML="";
-  p.appendChild(el("h2","section","🏠 Where we're staying"));
-  state.stays.forEach(s=>{
-    const card=el("div","card");
-    let h=`<div class="flight-head"><h3 style="margin:0">${esc(s.name)}</h3><span class="pill ${s.tagClass}">${esc(s.tag)}</span></div>`;
-    if(s.host) h+=`<div class="kv"><b>Host:</b> ${esc(s.host)}</div>`;
-    if(s.conf) h+=`<div class="kv"><b>Confirmation:</b> ${esc(s.conf)}</div>`;
-    if(s.checkin) h+=`<div class="kv"><b>Check-in:</b> ${esc(s.checkin)}</div>`;
-    if(s.checkout) h+=`<div class="kv"><b>Checkout:</b> ${esc(s.checkout)}</div>`;
-    if(s.address) h+=`<div class="kv"><b>Address:</b> ${esc(s.address)}</div>`;
-    card.innerHTML=h;
-    if(s.directions){
-      const d=el("details","dir");
-      d.innerHTML=`<summary>Directions from host</summary><p>${esc(s.directions)}</p>`;
-      card.appendChild(d);
+      function handleFiles(files){
+        Array.from(files).forEach(file=>{
+          if(file.size > 5*1024*1024){ alert(file.name+" is too large (max 5 MB)."); return; }
+          const reader = new FileReader();
+          reader.onload = ev =>{
+            attachments.push({
+              id: uid(),
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              data: ev.target.result,
+              cat: "Other",
+              date: new Date().toLocaleDateString()
+            });
+            saveAttachments();
+            drawAttachments();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      p.appendChild(dropArea);
+      p.appendChild(fileInput);
+
+      if(attachments.length === 0){
+        const empty = el("div","card");
+        empty.style.textAlign="center";
+        empty.style.color="var(--muted)";
+        empty.style.padding="28px";
+        empty.innerHTML="<div style='font-size:2rem;margin-bottom:8px'>📂</div>No files uploaded yet.";
+        p.appendChild(empty);
+        return;
+      }
+
+      // Group by category
+      ATTACH_CATS.forEach(cat=>{
+        const catFiles = attachments.filter(a=>a.cat===cat);
+        if(catFiles.length===0) return;
+
+        p.appendChild(el("div","attach-section-label",cat));
+        const grid = el("div","attach-grid");
+
+        catFiles.forEach(a=>{
+          const card = el("div","attach-card");
+          const isImg = a.type.startsWith("image/");
+
+          if(isImg){
+            const img = document.createElement("img");
+            img.className="thumb"; img.src=a.data; img.alt=a.name;
+            card.appendChild(img);
+          } else {
+            card.appendChild(el("div","a-icon",fileIcon(a.type)));
+          }
+
+          card.appendChild(el("div","a-name",esc(a.name)));
+          card.appendChild(el("div","a-meta",fmtSize(a.size)+" · "+a.date));
+
+          // category selector
+          const sel = document.createElement("select");
+          sel.style.cssText="font-size:.72rem;border:1px solid var(--line);border-radius:6px;padding:3px 5px;background:#fff;color:var(--ink);width:100%;margin-top:2px";
+          ATTACH_CATS.forEach(c=>{ const o=document.createElement("option");o.value=c;o.textContent=c;if(c===a.cat)o.selected=true; sel.appendChild(o); });
+          sel.addEventListener("change",()=>{ a.cat=sel.value; saveAttachments(); drawAttachments(); });
+          card.appendChild(sel);
+
+          // download button
+          const dl = el("button","a-dl","⬇ Download");
+          dl.addEventListener("click",()=>{
+            const anchor=document.createElement("a");
+            anchor.href=a.data; anchor.download=a.name; anchor.click();
+          });
+          card.appendChild(dl);
+
+          // delete button
+          const del = el("button","a-del","×"); del.title="Remove";
+          del.addEventListener("click",()=>{
+            if(confirm("Remove "+a.name+"?")){
+              attachments=attachments.filter(x=>x.id!==a.id); saveAttachments(); drawAttachments();
+            }
+          });
+          card.appendChild(del);
+          grid.appendChild(card);
+        });
+        p.appendChild(grid);
+      });
     }
-    if(s.note){const n=el("div","meta");n.style.marginTop="8px";n.textContent=s.note;card.appendChild(n);}
-    card.appendChild(noteField("stay:"+s.id,"Notes","Notes for this stay…"));
-    p.appendChild(card);
+    drawAttachments();
+  }
+
+  /* ---------- Tabs ---------- */
+  const renderers={overview:renderOverview,itinerary:renderItinerary,flights:renderFlights,
+    stays:renderStays,packing:renderPacking,daisy:renderDaisy,contacts:renderContacts,
+    notes:renderNotes,attachments:renderAttachments};
+
+  document.getElementById("tabs").addEventListener("click",e=>{
+    const btn=e.target.closest("button"); if(!btn)return;
+    const tab=btn.dataset.tab;
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b===btn));
+    document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id===tab));
+    renderers[tab]();
+    window.scrollTo({top:0,behavior:"smooth"});
   });
-}
 
-function renderPacking(){
-  const p=document.getElementById("packing"); p.innerHTML="";
-  p.appendChild(el("h2","section","🧳 Packing lists"));
-  p.appendChild(el("p","hint","Tap a box to mark packed. Add or remove items freely."));
-  ["Ryan","Wendy"].forEach(person=>{
-    const card=el("div","card");
-    card.appendChild(el("h3",null,(person==="Ryan"?"👨 ":"👩 ")+person+"'s bag"));
-    card.appendChild(checklist("pack-"+person, state.packing[person], {addPh:"Add to "+person+"'s list…"}));
-    p.appendChild(card);
-  });
-}
+  function renderAll(){
+    const active=document.querySelector("nav.tabs button.active")?.dataset.tab||"overview";
+    renderers[active]();
+    renderCountdown();
+  }
 
-function renderDaisy(){
-  const p=document.getElementById("daisy"); p.innerHTML="";
-  p.appendChild(el("h2","section","🐶 Daisy — Clovelly Kennels"));
-  const info=el("div","card");
-  info.innerHTML=`
-    <div class="flight-head"><h3 style="margin:0">Boarding stay</h3><span class="pill coral">Aug 17 – 31</span></div>
-    <div class="kv"><b>Where:</b> Clovelly Kennels</div>
-    <div class="kv"><b>Drop-off:</b> Mon, Aug 17 (before we leave for the airport)</div>
-    <div class="kv"><b>Pick-up:</b> Mon, Aug 31 (after we land, 7:10 AM)</div>`;
-  p.appendChild(info);
+  /* ---------- Init ---------- */
+  renderOverview();
+  renderCountdown();
+  setInterval(renderCountdown,60000);
 
-  const card=el("div","card");
-  card.appendChild(el("h3",null,"Daisy's checklist"));
-  card.appendChild(checklist("daisy", state.daisy.checklist, {addPh:"Add for Daisy…"}));
-  p.appendChild(card);
-
-  const notes=el("div","card");
-  notes.appendChild(el("h3",null,"Kennel notes"));
-  notes.appendChild(noteField("daisy-notes","","Feeding schedule, vet info, quirks, pick-up instructions…"));
-  p.appendChild(notes);
-}
-
-function renderContacts(){
-  const p=document.getElementById("contacts"); p.innerHTML="";
-  p.appendChild(el("h2","section","📇 Contacts"));
-  p.appendChild(el("p","hint","Tap a field to add phone numbers and notes."));
-  const list=el("div"); p.appendChild(list);
-  function draw(){
-    list.innerHTML="";
-    state.contacts.forEach(c=>{
-      const card=el("div","card contact");
-      const head=el("div","contact-head");
-      head.innerHTML=`<h3 style="margin:0">${esc(c.name||"New contact")}</h3>`;
-      const del=el("button","del","×");
-      del.addEventListener("click",()=>{state.contacts=state.contacts.filter(x=>x.id!==c.id);draw();save();});
-      head.appendChild(del);
-      card.appendChild(head);
-      const role=el("div","meta"); role.textContent=c.role||""; card.appendChild(role);
-      const grid=el("div","grid");
-      const pn=el("input");pn.type="tel";pn.placeholder="Phone";pn.value=c.phone||"";
-      pn.addEventListener("input",()=>{c.phone=pn.value;save();});
-      const nt=el("input");nt.type="text";nt.placeholder="Note";nt.value=c.note||"";
-      nt.addEventListener("input",()=>{c.note=nt.value;save();});
-      grid.appendChild(pn);grid.appendChild(nt);
-      card.appendChild(grid);
-      list.appendChild(card);
+  /* ---------- Service worker (PWA) ---------- */
+  if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+    window.addEventListener("load",()=>{
+      navigator.serviceWorker.register("sw.js").catch(()=>{});
     });
   }
-  draw();
-  const row=el("div","addrow");
-  const inp=el("input");inp.type="text";inp.placeholder="New contact name…";
-  const b=el("button","btn","Add");
-  const add=()=>{const v=inp.value.trim();if(!v)return;state.contacts.push({id:uid(),name:v,role:"",phone:"",note:""});inp.value="";draw();save();};
-  b.addEventListener("click",add);
-  inp.addEventListener("keydown",e=>{if(e.key==="Enter")add();});
-  row.appendChild(inp);row.appendChild(b);p.appendChild(row);
-}
-
-function renderNotes(){
-  const p=document.getElementById("notes"); p.innerHTML="";
-  p.appendChild(el("h2","section","📝 Notes & to-do"));
-  const td=el("div","card");
-  td.appendChild(el("h3",null,"Pre-trip to-do"));
-  td.appendChild(checklist("todo", state.todo, {addPh:"Add a to-do…"}));
-  p.appendChild(td);
-  const n=el("div","card");
-  n.appendChild(el("h3",null,"Shared notes"));
-  n.appendChild(noteField("shared-notes","","Anything and everything — gift ideas, food to buy, people to see…"));
-  p.appendChild(n);
-}
-
-/* ---------- Tabs ---------- */
-const renderers={overview:renderOverview,itinerary:renderItinerary,flights:renderFlights,
-  stays:renderStays,packing:renderPacking,daisy:renderDaisy,contacts:renderContacts,notes:renderNotes};
-document.getElementById("tabs").addEventListener("click",e=>{
-  const btn=e.target.closest("button"); if(!btn)return;
-  const tab=btn.dataset.tab;
-  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b===btn));
-  document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id===tab));
-  renderers[tab]();
-  window.scrollTo({top:0,behavior:"smooth"});
-});
-
-/* ---------- Backup / restore / reset ---------- */
-document.getElementById("exportBtn").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="trinidad-trip-2026-backup.json";
-  a.click();
-});
-document.getElementById("importBtn").addEventListener("click",()=>document.getElementById("importFile").click());
-document.getElementById("importFile").addEventListener("change",e=>{
-  const file=e.target.files[0]; if(!file)return;
-  const r=new FileReader();
-  r.onload=()=>{try{state=JSON.parse(r.result);if(!state.text)state.text={};save();renderAll();alert("Restored from backup ✓");}
-    catch(err){alert("Sorry, that file couldn't be read.");}};
-  r.readAsText(file);
-});
-document.getElementById("resetBtn").addEventListener("click",()=>{
-  if(confirm("Reset everything back to the original plan? Your checks and notes will be cleared.")){
-    state=seed();save();renderAll();
-  }
-});
-
-function renderAll(){
-  const active=document.querySelector("nav.tabs button.active")?.dataset.tab||"overview";
-  renderers[active]();
-  renderCountdown();
-}
-
-/* ---------- Init ---------- */
-renderOverview();
-renderCountdown();
-setInterval(renderCountdown,60000);
-
-/* ---------- Service worker (PWA) ---------- */
-if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("sw.js").catch(()=>{});
-  });
 }
 </script>
 </body>
