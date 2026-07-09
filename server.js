@@ -11,13 +11,30 @@ const { Pool } = require("pg");
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, "public");
 
-/* ── PostgreSQL connection ── */
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("railway.internal")
-    ? false   // internal Railway network — no SSL needed
-    : { rejectUnauthorized: false }
-});
+/* ── PostgreSQL connection ──
+   Railway exposes either DATABASE_URL (if you add a variable reference)
+   OR individual PG* env vars (PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE).
+   We support both so the app works however Railway is configured. */
+function makePool() {
+  const url = process.env.DATABASE_URL;
+  if (url) {
+    // Internal Railway private network URLs contain "railway.internal" — no SSL needed.
+    // Public URLs (postgres.railway.internal replaced by external host) need SSL.
+    const ssl = url.includes("railway.internal") ? false : { rejectUnauthorized: false };
+    return new Pool({ connectionString: url, ssl });
+  }
+  // Fall back to individual PG* variables (Railway shares these automatically
+  // when you click "Add Variable Reference" for the Postgres service).
+  return new Pool({
+    host:     process.env.PGHOST     || process.env.RAILWAY_PRIVATE_DOMAIN,
+    port:     parseInt(process.env.PGPORT || "5432"),
+    user:     process.env.PGUSER     || process.env.POSTGRES_USER,
+    password: process.env.PGPASSWORD || process.env.POSTGRES_PASSWORD,
+    database: process.env.PGDATABASE || process.env.POSTGRES_DB || "railway",
+    ssl: false  // internal Railway network — no SSL
+  });
+}
+const pool = makePool();
 
 /* ── Create tables on startup ── */
 async function initDB() {
